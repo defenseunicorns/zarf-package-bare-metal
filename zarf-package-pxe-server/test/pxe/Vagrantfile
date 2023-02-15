@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
       wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf_v0.24.2_Linux_amd64
       mv zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
       chmod +x /usr/local/bin/zarf
-      zarf init 
-      zarf package deploy /vagrant/zarf-package-pxe-amd64.tar.zst
+      zarf init --components k3s,git-server --confirm
+      zarf package deploy /vagrant/zarf-package-zarf-pxe-amd64.tar.zst
     SHELL
   end
