@@ -7,13 +7,13 @@ metadata:
 variables:
   - name: IPSTART
     default: 192.168.99.100
-    prompt: true
+    prompt: false
   - name: IPEND
     default: 192.168.99.200
-    prompt: true
+    prompt: false
   - name: SUBNET
     default: 255.255.255.0
-    prompt: true
+    prompt: false
 
 components:
   - name: zarf-pxe
