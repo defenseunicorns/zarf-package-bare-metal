@@ -28,4 +28,4 @@ components:
       - "nginx:1.23.3"
     files:
       - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
-      - target: /var/images/ubuntu-22.04.1.iso
+        target: /var/images/ubuntu-22.04.1.iso
