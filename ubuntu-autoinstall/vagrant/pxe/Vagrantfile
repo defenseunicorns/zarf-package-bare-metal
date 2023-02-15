@@ -5,13 +5,14 @@ Vagrant.configure("2") do |config|
   config.vm.box = "generic/ubuntu2204"
   config.vm.hostname = "pxe-server"
 
-  config.vm.synced_folder "./", "/vagrant", type: "rsync"
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
   # Create a private network without vagrant DHCP
   config.vm.network "private_network",
     ip: "192.168.0.254",
     libvirt__network_name: "pxe",
-    libvirt__dhcp_enabled: false
+    libvirt__dhcp_enabled: false,
+    libvirt__forward_mode: "none"
 
   # Configure VM
   config.vm.provider :libvirt do |libvirt|
@@ -28,16 +29,16 @@ Vagrant.configure("2") do |config|
     unlink /etc/resolv.conf
     echo -e "nameserver 127.0.0.1\r\nnameserver 1.1.1.1\r\nnameserver 8.8.8.8" > /etc/resolv.conf
     apt install isc-dhcp-server -y
-    cp /vagrant/dhcpd.conf /etc/dhcp/dhcpd.conf
+    cp /vagrant/dhcpd/dhcpd.conf /etc/dhcp/dhcpd.conf
     systemctl restart isc-dhcp-server
     apt install tftpd-hpa
-    cp /vagrant/tftpd-hpa /etc/default/tftpd-hpa
+    cp /vagrant/tftpd-hpa/tftpd-hpa /etc/default/tftpd-hpa
     mkdir -p /tftpboot
     systemctl restart tftpd-hpa
-    chmod +x /vagrant/tftp-provision.sh
-    /vagrant/tftp-provision.sh
+    chmod +x /vagrant/provisioning/tftp-provision.sh
+    /vagrant/provisioning/tftp-provision.sh
     apt install apache2 -y
-    chmod +x httpd-provision.sh
-    /vagrant/httpd-provision.sh
+    chmod +x /vagrant/provisioning/httpd-provision.sh
+    /vagrant/provisioning/httpd-provision.sh
   SHELL
 end
