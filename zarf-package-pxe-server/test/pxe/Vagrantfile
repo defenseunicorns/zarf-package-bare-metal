@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
       systemctl disable systemd-resolved
       unlink /etc/resolv.conf
       echo -e "nameserver 127.0.0.1\r\nnameserver 1.1.1.1\r\nnameserver 8.8.8.8" > /etc/resolv.conf
-      curl -O https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf_v0.24.2_Linux_amd64
+      wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf_v0.24.2_Linux_amd64
       mv zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
       chmod +x /usr/local/bin/zarf
       zarf init 
