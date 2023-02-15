@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zarf-pxe
+spec:
+  selector:
+    matchLabels:
+      app: zarf-pxe
+  template:
+    metadata:
+      labels:
+        app: zarf-pxe
+    spec:
+      containers:
+      - name: zarf-pxe
+        image: ghcr.io/ferrarimarco/pxe:master
+        command: ["dnsmasq"]
+        args: ["--no-daemon", "--dhcp-range=###ZARF_VAR_IPSTART###,###ZARF_VAR_IPEND###,###ZARF_VAR_SUBNET###"]
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
+      hostNetwork: true
+          

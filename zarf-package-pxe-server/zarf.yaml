@@ -1,0 +1,27 @@
+kind: ZarfPackageConfig
+metadata:
+  name: zarf-pxe
+  description: "Zarf package for PXE server"
+  # architecture: amd64
+
+variables:
+  - name: IPSTART
+    default: 192.168.99.100
+    prompt: true
+  - name: IPEND
+    default: 192.168.99.200
+    prompt: true
+  - name: SUBNET
+    default: 255.255.255.0
+    prompt: true
+
+components:
+  - name: zarf-pxe
+    required: true
+    manifests:
+      - name: zarf-pxe
+        namespace: zarf-pxe
+        files:
+          - manifests/deployment.yaml
+    images:
+      - "ghcr.io/ferrarimarco/pxe:master"
