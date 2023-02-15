@@ -18,7 +18,7 @@ spec:
         args: ["--no-daemon", "--dhcp-range=###ZARF_VAR_IPSTART###,###ZARF_VAR_IPEND###,###ZARF_VAR_SUBNET###"]
         volumeMounts:
           mountPath: /var/images
-          name: imagedir
+           - name: imagedir
         resources:
           limits:
             memory: "200Mi"

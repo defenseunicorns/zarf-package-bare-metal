@@ -34,16 +34,8 @@ components:
         before:
           - cmd: if [ "$(id -u)" -ne 0 ]; then echo "Please run as root." >&2; exit 1; fi
 
-  - name: zarf-pxe
+  - name: iso
     required: true
-    manifests:
-      - name: zarf-pxe
-        namespace: zarf-pxe
-        files:
-          - manifests/deployment.yaml
-    images:
-      - "ghcr.io/ferrarimarco/pxe:master"
-      - "nginx:1.23.3"
     actions:
       onDeploy:
         after:
@@ -60,3 +52,14 @@ components:
     files:
       - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
         target: ./ubuntu-22.04.1.iso
+
+  - name: zarf-pxe
+    required: true
+    manifests:
+      - name: zarf-pxe
+        namespace: zarf-pxe
+        files:
+          - manifests/deployment.yaml
+    images:
+      - "ghcr.io/ferrarimarco/pxe:master"
+      - "nginx:1.23.3"
