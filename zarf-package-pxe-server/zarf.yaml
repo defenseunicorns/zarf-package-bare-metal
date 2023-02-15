@@ -52,18 +52,11 @@ components:
               mkdir -p /httpboot/
               mkdir -p ./ubuntu.iso/
               mount -o loop ./ubuntu-22.04.1.iso ./ubuntu-iso/
-              cp -p ./ubuntu-iso/casper/vmlinuz                            /tftpboot/init/
-              cp -p ./ubuntu-iso/casper/initrd                             /tftpboot/init/
-           
+              cp -p ./ubuntu-iso/casper/vmlinuz /tftpboot/init/
+              cp -p ./ubuntu-iso/casper/initrd /tftpboot/init/
+              cp -p ./ubuntu-iso/EFI/boot/grubx64.efi /tftpboot/boot/uefi/grubx64.efi
+              cp -p ./ubuntu-iso/EFI/boot/bootx64.efi /tftpboot/boot/uefi/bootx64.efi
+              cp -p ./ubuntu-iso/boot/grub/fonts/unicode.pf2 /tftpboot/grub/fonts/
     files:
       - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
         target: ./ubuntu-22.04.1.iso
-      - source: /usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed
-        target: /tftpboot/boot/uefi/grubx64.efi
-      - source: /usr/lib/shim/shimx64.efi.signed
-        target: /tftpboot/boot/uefi/bootx64.efi
-      - source: /usr/share/grub/unicode.pf2
-        target: /tftpboot/grub/fonts/unicode.pf2
-      - source: ./grub.cfg
-        target: /tftpboot/grub/grub.cfg
-
