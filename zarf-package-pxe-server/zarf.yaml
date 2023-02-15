@@ -25,3 +25,4 @@ components:
           - manifests/deployment.yaml
     images:
       - "ghcr.io/ferrarimarco/pxe:master"
+      - "nginx:1.23.3"
