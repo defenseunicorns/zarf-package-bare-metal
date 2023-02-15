@@ -1,0 +1,12 @@
+[Unit]
+Description=Runonce Provisioner
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/bin/firstboot.sh
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

@@ -34,4 +34,4 @@ cp -p ./ubuntu-iso/casper/initrd                             /tftpboot/init/
 cp -p /usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed  /tftpboot/boot/uefi/grubx64.efi
 cp -p /usr/lib/shim/shimx64.efi.signed                       /tftpboot/boot/uefi/bootx64.efi
 cp -p /usr/share/grub/unicode.pf2                            /tftpboot/grub/fonts/
-cp -p /vagrant/grub.cfg                                      /tftpboot/grub/grub.cfg
+cp -p /vagrant/tftpd-hpa/grub.cfg                            /tftpboot/grub/grub.cfg
