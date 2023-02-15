@@ -20,9 +20,9 @@ spec:
           limits:
             memory: "200Mi"
             cpu: "500m"
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
       hostNetwork: true
-      securityContext:
-        capabilities:
-          add:
-            - NET_ADMIN
           
