@@ -7,15 +7,33 @@ metadata:
 variables:
   - name: IPSTART
     default: 192.168.99.100
-    prompt: false
   - name: IPEND
     default: 192.168.99.200
-    prompt: false
   - name: SUBNET
     default: 255.255.255.0
-    prompt: false
+
+  # Paths to the tftp-hosted boot files (from Ubuntu ISO)
+  # - name: KERNEL_PATH
+  #   default: ./vmlinuz
+  # - name: GRUBCFG_PATH
+  #   default: ./grub.cfg
+  # - name: INITRD_PATH
+  #   default: ./initrd
+  # - name: FONT_PATH
+  #   default: ./unicode.pf2
+  # - name: GRUBEFI_PATH
+  #   default: ./grubx64.efi
+  # - name: BOOTEFI_PATH
+  #   default: ./bootx64.efi
 
 components:
+  - name: root-check
+    required: true
+    actions:
+      onDeploy:
+        before:
+          - cmd: if [ "$(id -u)" -ne 0 ]; then echo "Please run as root." >&2; exit 1; fi
+
   - name: zarf-pxe
     required: true
     manifests:
@@ -26,6 +44,26 @@ components:
     images:
       - "ghcr.io/ferrarimarco/pxe:master"
       - "nginx:1.23.3"
+    actions:
+      onDeploy:
+        after:
+          - cmd: |
+              mkdir -p /tftpboot/init/
+              mkdir -p /httpboot/
+              mkdir -p ./ubuntu.iso/
+              mount -o loop ./ubuntu-22.04.1.iso ./ubuntu-iso/
+              cp -p ./ubuntu-iso/casper/vmlinuz                            /tftpboot/init/
+              cp -p ./ubuntu-iso/casper/initrd                             /tftpboot/init/
+           
     files:
       - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
-        target: /var/images/ubuntu-22.04.1.iso
+        target: ./ubuntu-22.04.1.iso
+      - source: /usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed
+        target: /tftpboot/boot/uefi/grubx64.efi
+      - source: /usr/lib/shim/shimx64.efi.signed
+        target: /tftpboot/boot/uefi/bootx64.efi
+      - source: /usr/share/grub/unicode.pf2
+        target: /tftpboot/grub/fonts/unicode.pf2
+      - source: ./grub.cfg
+        target: /tftpboot/grub/grub.cfg
+
