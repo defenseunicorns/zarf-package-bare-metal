@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  config.vm.hostname = "pxe-client"
+  # Connect to private server private network
+  config.vm.network "private_network",
+    libvirt__network_name: "pxe"
+  
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.cpu_mode = 'host-passthrough'
+    libvirt.memory = '16384'
+    libvirt.cpus = '2'
+    # Create a disk
+    libvirt.storage :file,
+      size: '50G',
+      type: 'qcow2',
+      bus: 'sata',
+      device: 'sda'
+    # Set pxe network NIC as default boot
+    boot_network = {'network' => 'pxe'}
+    libvirt.boot boot_network
+    libvirt.boot 'hd'
+    # Set UEFI boot, comment for legacy
+    libvirt.loader = '/usr/share/qemu/OVMF.fd'
+  end
+end
