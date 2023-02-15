@@ -21,4 +21,8 @@ spec:
             memory: "200Mi"
             cpu: "500m"
       hostNetwork: true
+      securityContext:
+        capabilities:
+          add:
+            - NET_ADMIN
           
