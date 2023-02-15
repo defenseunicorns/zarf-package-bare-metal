@@ -26,3 +26,6 @@ components:
     images:
       - "ghcr.io/ferrarimarco/pxe:master"
       - "nginx:1.23.3"
+    files:
+      - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
+      - local: /var/images
