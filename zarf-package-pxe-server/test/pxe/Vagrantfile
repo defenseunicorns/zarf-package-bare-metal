@@ -35,6 +35,6 @@ Vagrant.configure("2") do |config|
       chmod +x /usr/local/bin/zarf
       mkdir /var/images
       zarf init --components=k3s,git-server --no-progress --confirm
-      zarf package deploy /vagrant/zarf-package-zarf-pxe-amd64.tar.zst
+      zarf package deploy /vagrant/zarf-package-zarf-pxe-amd64.tar.zst --confirm
     SHELL
   end
