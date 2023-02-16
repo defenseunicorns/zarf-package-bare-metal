@@ -17,8 +17,8 @@ spec:
         command: ["dnsmasq"]
         args: ["--no-daemon", "--dhcp-range=###ZARF_VAR_IPSTART###,###ZARF_VAR_IPEND###,###ZARF_VAR_SUBNET###"]
         volumeMounts:
-          - name: imagedir
-            mountPath: /var/images
+          - name: tftpdir
+            mountPath: /var/lib/tftpboot
         resources:
           limits:
             memory: "200Mi"
@@ -27,6 +27,7 @@ spec:
           capabilities:
             add:
               - NET_ADMIN
+
       - name: zarf-nginx
         image: nginx:1.23.3
         ports:
@@ -35,9 +36,18 @@ spec:
           limits:
             memory: "200Mi"
             cpu: "500m"
+        volumeMounts:
+          - name: imagedir
+            mountPath: /usr/share/nginx/html
+
       volumes:
+        - name: tftpdir
+          hostPath:
+            path: /tftpboot
+            type: Directory
         - name: imagedir
-          path: /var/images
-          type: DirectoryOrCreate
+          hostPath:
+            path: /httpboot
+            type: Directory
       hostNetwork: true
           

@@ -40,10 +40,12 @@ components:
       onDeploy:
         after:
           - cmd: |
-              mkdir -p /tftpboot/init/
               mkdir -p /httpboot/
-              mkdir -p ./ubuntu.iso/
-              mount -o loop ./ubuntu-22.04.1.iso ./ubuntu-iso/
+              mkdir -p /tftpboot/init/
+              mkdir -p /tftpboot/boot/uefi/
+              mkdir -p /tftpboot/grub/fonts/
+              mkdir -p /tftpboot/init/
+              mount -o loop /httpboot/ubuntu-22.04.1.iso ./ubuntu-iso/
               cp -p ./ubuntu-iso/casper/vmlinuz /tftpboot/init/
               cp -p ./ubuntu-iso/casper/initrd /tftpboot/init/
               cp -p ./ubuntu-iso/EFI/boot/grubx64.efi /tftpboot/boot/uefi/grubx64.efi
@@ -51,7 +53,7 @@ components:
               cp -p ./ubuntu-iso/boot/grub/fonts/unicode.pf2 /tftpboot/grub/fonts/
     files:
       - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
-        target: ./ubuntu-22.04.1.iso
+        target: /httpboot/ubuntu-22.04.1.iso
 
   - name: zarf-pxe
     required: true
