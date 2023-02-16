@@ -46,15 +46,21 @@ components:
               mkdir -p /tftpboot/grub/fonts/
               mkdir -p /tftpboot/init/
               mkdir -p ./ubuntu-iso/
-              mount -o loop /httpboot/ubuntu-22.04.1.iso ./ubuntu-iso/
+              mount -o loop /httpboot/isos/ubuntu22.iso ./ubuntu-iso/
               cp -p ./ubuntu-iso/casper/vmlinuz /tftpboot/init/
               cp -p ./ubuntu-iso/casper/initrd /tftpboot/init/
-              cp -p ./ubuntu-iso/EFI/boot/grubx64.efi /tftpboot/boot/uefi/grubx64.efi
-              cp -p ./ubuntu-iso/EFI/boot/bootx64.efi /tftpboot/boot/uefi/bootx64.efi
+              dpkg-deb -R ./ubuntu-iso/pool/main/g/grub2-signed/grub-efi-amd64-signed_1.180+2.06-2ubuntu7_amd64.deb ./grub-efi-amd64
+              dpkg-deb -R ./ubuntu-iso/pool/main/s/shim-signed/shim-signed_1.51+15.4-0ubuntu9_amd64.deb ./shim-signed
+              cp -p ./grub-efi-amd64/usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed /tftpboot/grubx64.efi
+              cp -p ./shim-signed/usr/lib/shim/shimx64.efi.signed /tftpboot/boot/uefi/bootx64.efi
               cp -p ./ubuntu-iso/boot/grub/fonts/unicode.pf2 /tftpboot/grub/fonts/
+              touch /httpboot/roles/zarf-games/meta-data
+              chmod -R 755 /httpboot/
     files:
       - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
-        target: /httpboot/ubuntu-22.04.1.iso
+        target: /httpboot/isos/ubuntu22.iso
+      - source: role-zarf-games.yml
+        target: /httpboot/roles/zarf-games/user-data
 
   - name: zarf-pxe
     required: true

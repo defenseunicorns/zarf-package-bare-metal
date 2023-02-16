@@ -20,9 +20,11 @@ spec:
           - name: tftpdir
             mountPath: /var/lib/tftpboot
           - name: dnsmasqconfig
-            mountPath: /etc
+            mountPath: /etc/dnsmasq.conf
+            subPath: dnsmasq.conf
           - name: grubconfig
-            mountPath: /var/lib/tftpboot/grub
+            mountPath: /var/lib/tftpboot/grub/grub.cfg
+            subPath: grub.cfg
         resources:
           limits:
             memory: "200Mi"
@@ -41,7 +43,7 @@ spec:
             memory: "200Mi"
             cpu: "500m"
         volumeMounts:
-          - name: imagedir
+          - name: httpdir
             mountPath: /usr/share/nginx/html
 
       volumes:
@@ -49,7 +51,7 @@ spec:
           hostPath:
             path: /tftpboot
             type: Directory
-        - name: imagedir
+        - name: httpdir
           hostPath:
             path: /httpboot
             type: Directory
