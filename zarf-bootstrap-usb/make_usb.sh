@@ -5,38 +5,78 @@
 # Refs:
 # - https://askubuntu.com/questions/423300/live-usb-on-a-2-partition-usb-drive
 
-# download Ubuntu 22.04 Server ISO
-# https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso
-# https://releases.ubuntu.com/22.04.1/SHA256SUMS
-
-# find USB drive device
+# find usb drive device
+# USB_DEVICE=$()
 USB_DEVICE="/dev/sda"
 
-# wipe USB drive
-dd if=/dev/zero of="$USB_DEVICE" bs=512 count=1
+# get user approval to use the drive
+while true; do
+  echo ""
+  fdisk --list "$USB_DEVICE"
+  echo ""
+  udevadm info --query=all -n "$USB_DEVICE" | grep -P 'DEVPATH='
+  echo ""
 
-# create new partitions
-parted --align optimal "$USB_DEVICE" mklabel msdos
-parted --align optimal "$USB_DEVICE" mkpart primary fat32 2048s 2GiB
-parted --align optimal "$USB_DEVICE" mkpart primary ext4  2GiB  100%
+  read -p "You're about to wipe ${USB_DEVICE}!  Is that okay? [y/N] " answer
+  case $answer in
+    [Yy]* ) echo "" ; break ;;
+    * ) echo "" ; exit 1 ;;
+  esac
+done
 
-# format partitions
-mkfs.vfat -F 32 "${USB_DEVICE}1"
-mkfs.ext4 -F "${USB_DEVICE}2"
+# umount any partitions on that device
+mounts=$( mount | grep "$USB_DEVICE" | awk '{print $1}' )
+if [ -n "$mounts" ] ; then
+  echo "$mounts" | xargs umount
+fi
 
-# modify OS iso
-cp ./.downloads/ubuntu-22.04.1-live-server-amd64.iso ./modified.iso
-isohybrid --partok modified.iso
-# isohybrid: boot loader does not have an isolinux.bin hybrid signature.
-# ^-- this is a problem (apparently)
+# wipe gpt-based disk
+# https://serverfault.com/a/787210
+dd if=/dev/zero of=$USB_DEVICE bs=512 count=34
+dd if=/dev/zero of=$USB_DEVICE bs=512 count=34 seek=$((`blockdev --getsz $USB_DEVICE` - 34))
 
-# write modified iso to USB
-dd if=modified.iso of="${USB_DEVICE}1" bs=1M status=progress
+# download installable iso
+# Ubuntu 22.04 Server ISO
+DL="./.downloads" ; mkdir -p "$DL"
 
-# make USB iso partition bootable
-parted "${USB_DEVICE}" set 1 boot on
+URL_ISO="https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso"
+iso=$( basename "$URL_ISO" )
+if [ ! -f "$DL/$iso" ] ; then
+  curl --location --output "$DL/$iso" "$URL_ISO"
+fi
 
+URL_SUMS="https://releases.ubuntu.com/22.04.1/SHA256SUMS"
+sums=$( basename "$URL_SUMS" )
+if [ ! -f "$DL/$sums" ] ; then
+  curl --location --output "$DL/$sums" "$URL_SUMS"
+fi
 
-# download any add'l deps
+sumcheck=$( cd "$DL" ; cat "$sums" | grep server | sha256sum --check )
+if [ $? -ne 0 ] ; then
+  echo ""
+  echo "$DL/$iso checksum did not match!  Delete & retry!"
+  echo ""
+  exit 1
+fi
+echo "sha256sum: $sumcheck"
 
-# can't boot from the result, ugh!
+# write iso to USB
+dd if="$DL/$iso" of="$USB_DEVICE" bs=1M oflag=direct status=progress
+
+# expand GPT to fill entire USB
+# https://community.tenable.com/s/article/Unable-to-satisfy-all-constraints-on-the-partition-when-expanding-Tenable-Core-disk
+# https://unix.stackexchange.com/questions/317564/expanding-a-disk-with-a-gpt-table
+sgdisk --move-second-header "$USB_DEVICE"
+
+# add data partition to usb (filling available space)
+last_sector=$(
+  parted /dev/sda 'unit s print' \
+    | grep '^ 3' | awk '{ print $3}' \
+    | sed 's/s//' )
+
+# Warning: The resulting partition is not properly aligned for best performance:
+# 2880548s % 2048s != 0s
+block_boundary=$(( "$last_sector" - ( "$last_sector" % 2048 ) ))
+next_sector=$(( "$block_boundary" + 2048 ))
+
+parted --align optimal "$USB_DEVICE" mkpart primary ext4 "$next_sector"s 100%
