@@ -34,9 +34,9 @@ autoinstall:
       mkdir -p "$zarfdst"
       cp -R "$zarfsrc" "$zarfdst"
 
-    # - echo "ls -la /zarfboots" > /bin/firstboot.sh ; chmod +x /bin/firstboot.sh
+      cp "$zarfdst/firstboot.sh" /target/bin/firstboot.sh
+      cp "$zarfdst/runonce.service" /target/etc/systemd/system/runonce.service
 
-    # # - curtin in-target --target=/target -- curl http://192.168.0.254/roles/zarf-games/runonce.service --output /etc/systemd/system/runonce.service
-    # # - curtin in-target --target=/target -- systemctl enable runonce.service
+      curtin in-target --target=/target -- systemctl enable runonce.service
 
   version: 1

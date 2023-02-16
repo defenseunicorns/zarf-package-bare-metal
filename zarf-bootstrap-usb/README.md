@@ -27,12 +27,15 @@ o figure out how to run bootable USB install inside Vagrant..?
 
 o figure out how to do an unattended install?  Where does the cloud-init.yaml live?
 
-- figure out how to build Zarf PXE package
+o figure out how to build Zarf PXE package
   - zarf package create
 
-- download deps & add to USB
+o download deps & add to USB
 
-- add firstboot script & runonce service
+o add firstboot script & runonce service
   - zarf-package-bare-metal/zarf-package-pxe-server/manifests/games-role.cm.yaml
 
+- get the damned USB sync to work!
+  - write to .img & dd onto usb maybe?
+  
 - make sure it works without internet connection on the VM!
