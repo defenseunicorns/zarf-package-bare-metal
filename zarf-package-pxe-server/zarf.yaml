@@ -45,6 +45,7 @@ components:
               mkdir -p /tftpboot/boot/uefi/
               mkdir -p /tftpboot/grub/fonts/
               mkdir -p /tftpboot/init/
+              mkdir -p ./ubuntu-iso/
               mount -o loop /httpboot/ubuntu-22.04.1.iso ./ubuntu-iso/
               cp -p ./ubuntu-iso/casper/vmlinuz /tftpboot/init/
               cp -p ./ubuntu-iso/casper/initrd /tftpboot/init/
@@ -62,6 +63,8 @@ components:
         namespace: zarf-pxe
         files:
           - manifests/deployment.yaml
+          - manifests/grubconfig.yaml
+          - manifests/dnsmasqconfig.yaml
     images:
       - "ghcr.io/ferrarimarco/pxe:master"
       - "nginx:1.23.3"
