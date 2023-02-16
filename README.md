@@ -18,6 +18,8 @@ This is an experimental package to deploy Zarf packages on bare metal machines. 
 The `zarf-bootstrap-usb` subproject creates an Ubuntu bootable drive along with an additional partition with files
 necessary to run the PXE server described below.
 
+[[More Info](zarf-bootstrap-usb)]
+
 ### zarf-package-pxe-server
 
 The `zarf-package-pxe-server` subproject defines a Zarf package `zarf-pxe`. This package runs a PXE and nginx server
@@ -28,3 +30,5 @@ on its subnet and reply with appropriate TFTP details.
 
 The `zarf-pxe` server will instruct clients to install Ubuntu (unattended). This sets up Zarf on the client along with 
 some classic games that run in k3s on the client.
+
+[[More Info](zarf-package-pxe-server)]
