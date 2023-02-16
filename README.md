@@ -5,11 +5,12 @@
 
 # zarf-package-bare-metal
 
+>⚠️ **This is a work in progress and still under active development.**
+
 This is an experimental package to deploy Zarf packages on bare metal machines.  The concept is to take a USB drive and use it to bootstrap a utility node that can be used to bootstrap other nodes over a local network.  See the below diagram for a laydown of how this works:
 
 ![Zarf Bare Metal Diagram](.images/zarf-bare-metal.drawio.svg)
 
-## NOTE! This is a work in progress and still under active development.
 
 ## How this Works
 
@@ -35,14 +36,16 @@ For testing `zarf-package-pxe-server`, two `Vagrantfile`s are provided, in the `
 
 To run the server:
 
-```shell
+
+```bash
 cd test/pxe
 vagrant up
 ```
 
 Then run the client:
 
-```shell
+
+```bash
 cd test/client
 vagrant up
 ```
