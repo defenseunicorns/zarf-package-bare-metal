@@ -1,3 +1,8 @@
+![Apache License](https://img.shields.io/github/license/defenseunicorns/zarf-package-bare-metal)
+![Issues](https://img.shields.io/github/issues/defenseunicorns/zarf-package-bare-metal)
+
+![Stars](https://img.shields.io/github/stars/defenseunicorns/zarf-package-bare-metal?style=social)
+
 # zarf-package-bare-metal
 
 This is an experimental package to deploy Zarf packages on bare metal machines.  The concept is to take a USB drive and use it to bootstrap a utility node that can be used to bootstrap other nodes over a local network.  See the below diagram for a laydown of how this works:
