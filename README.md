@@ -1,3 +1,4 @@
+![Dash Days](https://img.shields.io/badge/Dash%20Days-best--project-blueviolet)
 ![Apache License](https://img.shields.io/github/license/defenseunicorns/zarf-package-bare-metal)
 ![Issues](https://img.shields.io/github/issues/defenseunicorns/zarf-package-bare-metal)
 
