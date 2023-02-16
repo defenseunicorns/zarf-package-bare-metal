@@ -39,4 +39,8 @@ o figure out how to run bootable USB install inside Vagrant..?
 
   - following guild f/ 22.04 server, here:
     https://www.pugetsystems.com/labs/hpc/ubuntu-22-04-server-autoinstall-iso/
-    
+    - add autoinstall files to image
+    - add autoinstall flags to boot option
+    - post-install to copy USB data files to host
+    - ...and whatever else is needed on install?
+    - ...and setup firstboot, maybe?
