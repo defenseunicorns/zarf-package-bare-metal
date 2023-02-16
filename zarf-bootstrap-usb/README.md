@@ -4,7 +4,7 @@
   - dd, blockdev, sgdisk : to erase / write data on USB drive
   - mount, unmount : to allow access to USB drive
   - curl, sha256sum : to download installer ISO
-  - parted : to lay down new partitions
+  - parted, e2label : to lay down new partitions
 
   - p7zip : to unpack vanilla ISO
   - xorriso : to repack autoinstall-enabled ISO

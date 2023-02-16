@@ -35,11 +35,33 @@ fi
 dd if=/dev/zero of=$USB_DEVICE bs=512 count=34
 dd if=/dev/zero of=$USB_DEVICE bs=512 count=34 seek=$((`blockdev --getsz $USB_DEVICE` - 34))
 
-# find mod'ed iso
-iso="./.mod_iso/zarf-boots.iso"
+# download installable iso
+# Ubuntu 22.04 Server ISO
+DL="./.downloads" ; mkdir -p "$DL"
+
+URL_ISO="https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso"
+iso=$( basename "$URL_ISO" )
+if [ ! -f "$DL/$iso" ] ; then
+  curl --location --output "$DL/$iso" "$URL_ISO"
+fi
+
+URL_SUMS="https://releases.ubuntu.com/22.04.1/SHA256SUMS"
+sums=$( basename "$URL_SUMS" )
+if [ ! -f "$DL/$sums" ] ; then
+  curl --location --output "$DL/$sums" "$URL_SUMS"
+fi
+
+sumcheck=$( cd "$DL" ; cat "$sums" | grep server | sha256sum --check )
+if [ $? -ne 0 ] ; then
+  echo ""
+  echo "$DL/$iso checksum did not match!  Delete & retry!"
+  echo ""
+  exit 1
+fi
+echo "sha256sum: $sumcheck"
 
 # write iso to USB
-dd if="$iso" of="$USB_DEVICE" bs=1M oflag=direct status=progress
+dd if="$DL/$iso" of="$USB_DEVICE" bs=1M oflag=direct status=progress
 
 # expand GPT to fill entire USB
 # https://community.tenable.com/s/article/Unable-to-satisfy-all-constraints-on-the-partition-when-expanding-Tenable-Core-disk
@@ -58,4 +80,3 @@ block_boundary=$(( "$last_sector" - ( "$last_sector" % 2048 ) ))
 next_sector=$(( "$block_boundary" + 2048 ))
 
 parted --align optimal "$USB_DEVICE" mkpart primary ext4 "$next_sector"s 100%
-e2label "${USB_DEVICE}4" "zarf-boots"

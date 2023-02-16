@@ -1,3 +1,4 @@
 .vagrant
 .downloads
 *.iso
+.mod_iso
