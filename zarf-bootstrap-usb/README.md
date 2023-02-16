@@ -5,9 +5,9 @@
   - mount, unmount : to allow access to USB drive
   - curl, sha256sum : to download installer ISO
   - parted, e2label : to lay down new partitions
-
   - p7zip : to unpack vanilla ISO
   - xorriso : to repack autoinstall-enabled ISO
+  - zarf : to build PXE package
 
 ? USB stick (wants)
   - partition 1-3: bootable Ubuntu server installer
@@ -25,22 +25,14 @@ o update make_usb.sh script to allow dd & then add partition
 
 o figure out how to run bootable USB install inside Vagrant..?
 
-- figure out how to do an unattended install?  Where does the cloud-init.yaml live?
-    - create a simple one & prove that unattended installer can use files from data partition.
-      - i.e. https://pastebin.com/THdw6nnP
-  - https://ubuntu.com/server/docs/install/autoinstall-quickstart
-    https://cloudinit.readthedocs.io/en/17.2/topics/datasources/nocloud.html
-    - ^-- "autoinstall" from local file..?
+o figure out how to do an unattended install?  Where does the cloud-init.yaml live?
 
-  - attempting to add autoinstall files to iso & leave data partition free for deps
-    - add autoinstall yaml to d/l'd iso
-    - try modify VM boot args to ref autoinstall:
-      - autoinstall ds=nocloud;seedfrom=file://<dir w/ user-/meta-data files>
+- figure out how to build Zarf PXE package
+  - zarf package create
 
-  - following guild f/ 22.04 server, here:
-    https://www.pugetsystems.com/labs/hpc/ubuntu-22-04-server-autoinstall-iso/
-    - add autoinstall files to image
-    - add autoinstall flags to boot option
-    - post-install to copy USB data files to host
-    - ...and whatever else is needed on install?
-    - ...and setup firstboot, maybe?
+- download deps & add to USB
+
+- add firstboot script & runonce service
+  - zarf-package-bare-metal/zarf-package-pxe-server/manifests/games-role.cm.yaml
+
+- make sure it works without internet connection on the VM!
