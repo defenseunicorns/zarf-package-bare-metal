@@ -30,14 +30,31 @@ on its subnet and reply with appropriate TFTP details.
 The `zarf-pxe` server will instruct clients to install Ubuntu (unattended). This sets up Zarf on the client along with 
 some classic games that run in k3s on the client.
 
-### Testing
+#### **Building**
 
-For testing `zarf-package-pxe-server`, two `Vagrantfile`s are provided, in the `test/` folder.
+Clone the repo:
+
+```bash
+git clone https://github.com/defenseunicorns/zarf-package-bare-metal.git
+cd zarf-package-bare-metal
+```
+
+To build the Zarf package:
+
+```bash
+cd zarf-package-pxe-server
+zarf package create
+```
+
+#### **Testing**
+
+For testing `zarf-package-pxe-server`, two `Vagrantfile`s are provided, in the `test/` folder. You'll need Vagrant installed along with the libvirt Vagrant provider. [Instructions here](https://vagrant-libvirt.github.io/vagrant-libvirt/)
 
 To run the server:
 
 
 ```bash
+cp zarf-package-pxe-server.tar.zst test/pxe
 cd test/pxe
 vagrant up
 ```
