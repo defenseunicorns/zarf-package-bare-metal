@@ -37,5 +37,9 @@ o add firstboot script & runonce service
 
 - get the damned USB sync to work!
   - write to .img & dd onto usb maybe?
-  
+
 - make sure it works without internet connection on the VM!
+
+- reflow the processes so
+  - build the USB stick against a loop-mounted .img on disk
+  - write finished product to USB only once!
