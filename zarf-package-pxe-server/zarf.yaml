@@ -6,9 +6,9 @@ metadata:
 
 variables:
   - name: IPSTART
-    default: 192.168.99.100
+    default: 192.168.0.100
   - name: IPEND
-    default: 192.168.99.200
+    default: 192.168.0.200
   - name: SUBNET
     default: 255.255.255.0
 
