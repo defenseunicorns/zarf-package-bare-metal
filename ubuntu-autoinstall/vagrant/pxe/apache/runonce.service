@@ -1,10 +1,11 @@
 [Unit]
 Description=Runonce Provisioner
-After=network-online.target
+After=multi-user.target
 
 [Service]
 Type=simple
 User=root
+Environment="TERM=linux"
 ExecStart=/bin/firstboot.sh
 Restart=no
 
