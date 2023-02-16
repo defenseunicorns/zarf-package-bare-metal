@@ -45,15 +45,17 @@ spec:
         volumeMounts:
           - name: httpdir
             mountPath: /usr/share/nginx/html
+          - name: dos-games-role
+            mountPath: /usr/share/nginx/html/roles/zarf-games/
 
       volumes:
         - name: tftpdir
           hostPath:
-            path: /tftpboot
+            path: /opt/pxe/tftpboot
             type: Directory
         - name: httpdir
           hostPath:
-            path: /httpboot
+            path: /opt/pxe/httpboot
             type: Directory
         - name: dnsmasqconfig
           configMap:
@@ -61,5 +63,7 @@ spec:
         - name: grubconfig
           configMap:
             name: grubconfig
+        - name: dos-games-role
+          configMap:
+            name: games-role
       hostNetwork: true
-          

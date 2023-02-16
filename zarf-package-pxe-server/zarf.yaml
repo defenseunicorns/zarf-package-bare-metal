@@ -34,33 +34,50 @@ components:
         before:
           - cmd: if [ "$(id -u)" -ne 0 ]; then echo "Please run as root." >&2; exit 1; fi
 
-  - name: iso
+  - name: iso-mount-and-place
+    required: true
+    files:
+      - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
+        target: /opt/pxe/httpboot/isos/ubuntu22.iso
+    actions:
+      onDeploy:
+        after:
+          - cmd: mkdir -p /opt/pxe/ubuntu-iso/
+          - cmd: mount -o loop /opt/pxe/httpboot/isos/ubuntu22.iso /opt/pxe/ubuntu-iso/
+
+  - name: pxe-files
     required: true
     actions:
       onDeploy:
         after:
-          - cmd: |
-              mkdir -p /httpboot/
-              mkdir -p /tftpboot/init/
-              mkdir -p /tftpboot/boot/uefi/
-              mkdir -p /tftpboot/grub/fonts/
-              mkdir -p /tftpboot/init/
-              mkdir -p ./ubuntu-iso/
-              mount -o loop /httpboot/isos/ubuntu22.iso ./ubuntu-iso/
-              cp -p ./ubuntu-iso/casper/vmlinuz /tftpboot/init/
-              cp -p ./ubuntu-iso/casper/initrd /tftpboot/init/
-              dpkg-deb -R ./ubuntu-iso/pool/main/g/grub2-signed/grub-efi-amd64-signed_1.180+2.06-2ubuntu7_amd64.deb ./grub-efi-amd64
-              dpkg-deb -R ./ubuntu-iso/pool/main/s/shim-signed/shim-signed_1.51+15.4-0ubuntu9_amd64.deb ./shim-signed
-              cp -p ./grub-efi-amd64/usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed /tftpboot/grubx64.efi
-              cp -p ./shim-signed/usr/lib/shim/shimx64.efi.signed /tftpboot/boot/uefi/bootx64.efi
-              cp -p ./ubuntu-iso/boot/grub/fonts/unicode.pf2 /tftpboot/grub/fonts/
-              touch /httpboot/roles/zarf-games/meta-data
-              chmod -R 755 /httpboot/
+          - cmd: mkdir -p /opt/pxe/tftpboot/init/
+          - cmd: mkdir -p /opt/pxe/tftpboot/boot/uefi/
+          - cmd: mkdir -p /opt/pxe/tftpboot/grub/fonts/
+          - cmd: cp -p /opt/pxe/ubuntu-iso/casper/vmlinuz /opt/pxe/tftpboot/init/
+          - cmd: cp -p /opt/pxe/ubuntu-iso/casper/initrd  /opt/pxe/tftpboot/init/
+          - cmd: dpkg-deb -R /opt/pxe/ubuntu-iso/pool/main/g/grub2-signed/grub-efi-amd64-signed_1.180+2.06-2ubuntu7_amd64.deb /opt/pxe/grub-efi-amd64
+          - cmd: dpkg-deb -R /opt/pxe/ubuntu-iso/pool/main/s/shim-signed/shim-signed_1.51+15.4-0ubuntu9_amd64.deb             /opt/pxe/shim-signed
+          - cmd: cp -p /opt/pxe/grub-efi-amd64/usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed /opt/pxe/tftpboot/grubx64.efi
+          - cmd: cp -p /opt/pxe/shim-signed/usr/lib/shim/shimx64.efi.signed                         /opt/pxe/tftpboot/boot/uefi/bootx64.efi
+          - cmd: cp -p /opt/pxe/ubuntu-iso/boot/grub/fonts/unicode.pf2                              /opt/pxe/tftpboot/grub/fonts/
+
+  - name: zarf-games-zarf
+    required: true
+    cosignKeyPath: cosign.pub
     files:
-      - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
-        target: /httpboot/isos/ubuntu22.iso
-      - source: role-zarf-games.yml
-        target: /httpboot/roles/zarf-games/user-data
+      - source: https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf-init-amd64-v0.24.2.tar.zst
+        target: /opt/pxe/httpboot/zarf/zarf-games/zarf-init-amd64-v0.24.2.tar.zst
+      - source: https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf_v0.24.2_Linux_amd64
+        target: /opt/pxe/httpboot/zarf/zarf-games/zarf
+      - source: sget://defenseunicorns/zarf-hello-world:amd64
+        target: /opt/pxe/httpboot/zarf/zarf-games/zarf-package-dos-games-amd64.tar.zst
+
+  - name: http-permissions
+    required: true
+    actions:
+      onDeploy:
+        after:
+          - cmd: chmod -R 755 /opt/pxe/httpboot/
 
   - name: zarf-pxe
     required: true
@@ -69,8 +86,9 @@ components:
         namespace: zarf-pxe
         files:
           - manifests/deployment.yaml
-          - manifests/grubconfig.yaml
-          - manifests/dnsmasqconfig.yaml
+          - manifests/dnsmasq.cm.yaml
+          - manifests/games-role.cm.yaml
+          - manifests/grub.cm.yaml
     images:
       - "ghcr.io/ferrarimarco/pxe:master"
       - "nginx:1.23.3"
