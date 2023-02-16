@@ -17,6 +17,7 @@ Vagrant.configure("2") do |config|
       libvirt.cpus = '2'
     end
   
+    # Expect zarf binary and init package to be in same folder as Vagrantfile, then mounted to /vagrant
     config.vm.provision "shell",
     privileged: true,
     inline: <<-SHELL
@@ -24,9 +25,13 @@ Vagrant.configure("2") do |config|
       systemctl disable systemd-resolved
       unlink /etc/resolv.conf
       echo -e "nameserver 127.0.0.1\r\nnameserver 1.1.1.1\r\nnameserver 8.8.8.8" > /etc/resolv.conf
-      wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf_v0.24.2_Linux_amd64
-      wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf-init-amd64-v0.24.2.tar.zst
-      mv zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
+      
+      # wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf_v0.24.2_Linux_amd64
+      # mv zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
+      # wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf-init-amd64-v0.24.2.tar.zst
+      
+      cp /vagrant/zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
+      cp /vagrant/zarf-init-amd64-v0.24.2.tar.zst /home/vagrant/
       chmod +x /usr/local/bin/zarf
       mkdir /var/images
       zarf init --components=k3s,git-server --no-progress --confirm
