@@ -92,7 +92,10 @@ Watch it work:
 
 - ✓ -- get the flippin' USB sync to work!
   - so slow! (30 min to write 2GB?!)
-  
+
+- ? -- Figure out why Zarf PXE package pods won't start
+  - some kind of port conflict..?
+  - "Warning --> FailedScheduling --> 5m30s --> default-scheduler --> 0/1 nodes are available: 1 node(s) didn't have free ports for the requested pod ports."
 
 - ? -- make sure it works without internet connection on the VM!
 
