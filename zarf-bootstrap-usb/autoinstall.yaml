@@ -32,9 +32,11 @@ autoinstall:
 
       zarfdst="/target/zarfboots"
       mkdir -p "$zarfdst"
-      cp -R "$zarfsrc" "$zarfdst"
+      cp --recursive "$zarfsrc/." "$zarfdst"
 
       cp "$zarfdst/firstboot.sh" /target/bin/firstboot.sh
+      chmod +x /target/bin/firstboot.sh
+      
       cp "$zarfdst/runonce.service" /target/etc/systemd/system/runonce.service
 
       curtin in-target --target=/target -- systemctl enable runonce.service

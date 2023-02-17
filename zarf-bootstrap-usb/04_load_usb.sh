@@ -31,6 +31,6 @@ cp "./firstboot.sh" "$USB_DATA/firstboot.sh"
 cp "./runonce.service" "$USB_DATA/runonce.service"
 
 # force-write & release usb
-echo "Syncing data to usb..."
+echo "Syncing data to usb..." ; sleep 1
 sync -f "$USB_DATA"
 umount "$USB_DATA"
