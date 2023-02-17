@@ -22,20 +22,11 @@ Vagrant.configure("2") do |config|
     config.vm.provision "shell",
     privileged: true,
     inline: <<-SHELL
-      systemctl stop systemd-resolved
-      systemctl disable systemd-resolved
-      unlink /etc/resolv.conf
-      echo -e "nameserver 127.0.0.1\r\nnameserver 1.1.1.1\r\nnameserver 8.8.8.8" > /etc/resolv.conf
-      
-      # wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf_v0.24.2_Linux_amd64
-      # mv zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
-      # wget https://github.com/defenseunicorns/zarf/releases/download/v0.24.2/zarf-init-amd64-v0.24.2.tar.zst
-      
       cp /vagrant/zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
       cp /vagrant/zarf-init-amd64-v0.24.2.tar.zst /home/vagrant/
       chmod +x /usr/local/bin/zarf
       mkdir -p /var/images
-      zarf init --components=k3s,git-server --no-progress --confirm
+      zarf init --components=k3s --no-progress --confirm
       zarf package deploy /vagrant/zarf-package-zarf-pxe-amd64.tar.zst --confirm
     SHELL
   end
