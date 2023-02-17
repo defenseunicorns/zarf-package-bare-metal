@@ -35,7 +35,7 @@ o download deps & add to USB
 o add firstboot script & runonce service
   - zarf-package-bare-metal/zarf-package-pxe-server/manifests/games-role.cm.yaml
 
-- get the damned USB sync to work!
+o get the damned USB sync to work!
   - write to .img & dd onto usb maybe?
 
 - make sure it works without internet connection on the VM!
@@ -43,3 +43,7 @@ o add firstboot script & runonce service
 - reflow the processes so
   - build the USB stick against a loop-mounted .img on disk
   - write finished product to USB only once!
+
+- find out if any deps need to be carried over aside from zarf, like:
+  - debs f/ OS utils..?
+  - anything else NOT zarfable?
