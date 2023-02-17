@@ -41,7 +41,10 @@ autoinstall:
       chmod +x /target/bin/firstboot.sh
 
       cp "$zarfdst/runonce.service" /target/etc/systemd/system/runonce.service
-
       curtin in-target --target=/target -- systemctl enable runonce.service
+
+      curtin in-target --target=/target -- systemctl disable systemd-resolved
+      unlink /target/etc/resolv.conf
+      echo -e "nameserver 127.0.0.1\r\nnameserver 1.1.1.1\r\nnameserver 8.8.8.8" > /target/etc/resolv.conf
 
   version: 1
