@@ -5,6 +5,7 @@
 # Refs:
 # - https://www.pugetsystems.com/labs/hpc/ubuntu-22-04-server-autoinstall-iso/
 
+
 # download installable iso
 # Ubuntu 22.04 Server ISO
 DL="./.downloads" ; mkdir -p "$DL"

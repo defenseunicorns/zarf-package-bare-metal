@@ -1,4 +1,6 @@
 .vagrant
 .downloads
-*.iso
 .mod_iso
+.loop_usb
+*.iso
+*.img

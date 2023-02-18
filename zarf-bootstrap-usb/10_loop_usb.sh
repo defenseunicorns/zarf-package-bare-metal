@@ -1,0 +1,153 @@
+#!/bin/bash
+# Reqs:
+# - run as root (i.e. sudo)
+#
+# Refs:
+# - https://www.pugetsystems.com/labs/hpc/ubuntu-22-04-server-autoinstall-iso/
+# - https://linuxconfig.org/how-to-create-loop-devices-on-linux
+# - https://www.thegeekdiary.com/how-to-create-sparse-files-in-linux-using-dd-command/
+# - https://wiki.archlinux.org/title/sparse_file
+
+
+here=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+
+# download installable iso
+DL="./.downloads" ; mkdir -p "$DL"
+
+URL_ISO="https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso"
+iso=$( basename "$URL_ISO" )
+if [ ! -f "$DL/$iso" ] ; then
+  curl --location --output "$DL/$iso" "$URL_ISO"
+fi
+
+URL_SUMS="https://releases.ubuntu.com/22.04.1/SHA256SUMS"
+sums=$( basename "$URL_SUMS" )
+if [ ! -f "$DL/$sums" ] ; then
+  curl --location --output "$DL/$sums" "$URL_SUMS"
+fi
+
+sumcheck=$( cd "$DL" ; cat "$sums" | grep server | sha256sum --check )
+if [ $? -ne 0 ] ; then
+  echo ""
+  echo "$DL/$iso checksum did not match!  Delete & retry!"
+  echo ""
+  exit 1
+fi
+echo "sha256sum: $sumcheck"
+
+
+# clear working directory
+WD="$here/.loop_usb"
+rm --recursive --force "$WD"
+mkdir --parents "$WD"
+
+
+# unpack vanilla iso
+WD_ISO="$WD/iso"
+unpack="$WD_ISO/${iso%.iso}" ; mkdir -p "$unpack"
+7z -y x "$DL/$iso" -o"$unpack"
+
+
+# mv boot partition images up to working directory
+mv "$unpack/[BOOT]" "$WD_ISO/BOOT"
+
+
+# inject autoinstall boot option
+grubcfg="$unpack/boot/grub/grub.cfg"
+
+read -r -d '' boot_option <<'EOF'
+menuentry "Autoinstall Zarf Bootstrapper" {
+  set gfxpayload=keep
+  linux   /casper/vmlinuz quiet autoinstall ds=nocloud\;s=/cdrom/zarf/  ---
+  initrd  /casper/initrd
+}
+EOF
+needle=$( cat "$grubcfg" | awk '/Try or Install/{ print NR; exit }' )
+count=$( wc --lines "$grubcfg" | awk '{print $1}' )
+
+head=$( cat "$grubcfg" | head -n $(($needle - 1)) )
+tail=$( cat "$grubcfg" | tail -n $(($count - $needle + 1 )) )
+
+echo "$head" > "$grubcfg"
+echo "" >> "$grubcfg"
+echo "$boot_option" >> "$grubcfg"
+echo "" >> "$grubcfg"
+echo "$tail" >> "$grubcfg"
+
+
+# add autoinstall config directory
+AI="$unpack/zarf" ; mkdir -p "$AI"
+touch "$AI/meta-data"
+cp "./autoinstall.yaml" "$AI/user-data"
+
+
+# pack modified iso
+xorriso -as mkisofs -r \
+  -V 'Zarf Boots' \
+  -o "$WD/zarf-boots.iso" \
+  --grub2-mbr "$WD_ISO/BOOT/1-Boot-NoEmul.img" \
+  -partition_offset 16 \
+  --mbr-force-bootable \
+  -append_partition 2 28732ac11ff8d211ba4b00a0c93ec93b "$WD_ISO/BOOT/2-Boot-NoEmul.img" \
+  -appended_part_as_gpt \
+  -iso_mbr_part_type a2a0d0ebe5b9334487c068b6b72699c7 \
+  -c '/boot.catalog' \
+  -b '/boot/grub/i386-pc/eltorito.img' \
+    -no-emul-boot -boot-load-size 4 -boot-info-table --grub2-boot-info \
+  -eltorito-alt-boot \
+  -e '--interval:appended_partition_2:::' \
+  -no-emul-boot \
+  "$unpack"
+
+
+# set img / block size (in bytes)
+# https://www.gnu.org/software/coreutils/manual/html_node/numfmt-invocation.html
+# https://askubuntu.com/questions/931581/flashing-ubuntu-iso-to-usb-stick-with-dd-recommended-block-size
+SIZE=$( numfmt --from=si 16G )
+BLOCK=$( numfmt --from=iec-i 4Ki )
+if [ $(( $SIZE % $BLOCK )) -ne 0 ] ; then
+  echo "Block ($BLOCK) doesn't divide evenly into size ($SIZE)! Try again!"
+  exit 1
+fi
+
+
+# create blank img file
+PERSISTENT="$here/.downloads"
+BLANK="$PERSISTENT/blank.img"
+IMG="$WD/usb.img"
+
+blocks=$(( $SIZE / $BLOCK ))
+
+if [ ! -f "$BLANK" ] ; then
+  # full-zeroize: prevent loop device mount issues / 'dd conv=sparse' works optimally
+  dd if=/dev/zero of="$BLANK" bs="$BLOCK" count="$blocks" oflag=direct status=progress
+fi
+
+echo "Copying $(basename "$BLANK") into working dir..."
+time cp "$BLANK" "$IMG"
+
+
+# mount img file as loop device
+losetup --partscan --find "$IMG"
+loop_dev=$( losetup | grep "$IMG" | awk '{print $1}' )
+
+
+# write modified iso to image
+#
+# TODO
+#
+losetup
+
+# unmount img file from loop device
+losetup --detach "$loop_dev"
+
+
+# # https://www.thegeekdiary.com/how-to-create-sparse-files-in-linux-using-dd-command/
+# dd if="$here/16G-blank.img" of="$here/16G-sparse.img" bs="$BLOCK" conv=sparse oflag=direct status=progress
+# du --apparent-size --human-readable "$here/16G-blank.img" # apparent size
+# du                 --human-readable "$here/16G-blank.img" # actual size
+# du --apparent-size --human-readable "$here/16G-sparse.img"
+# du                 --human-readable "$here/16G-sparse.img"
+#
+# dd if="$here/16G-blank.img" of=/dev/sdX bs="$BLOCK" conv=sparse,fsync oflag=direct status=progress
