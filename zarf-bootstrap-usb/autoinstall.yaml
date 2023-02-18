@@ -1,6 +1,6 @@
-
 #cloud-config
 autoinstall:
+  version: 1
   updates: security
   apt:
     disable_components: [restricted,multiverse,universe]
@@ -26,11 +26,11 @@ autoinstall:
         lsblk -o name,label | grep 'zarf-boots' \
           | awk '{print $1}' | grep -Po '[a-zA-Z0-9]*'
       )
-      zarfsrc="/media/zarfboots"
+      zarfsrc="/media/zarf-boots"
       mkdir -p "$zarfsrc"
       mount "/dev/$partition" "$zarfsrc"
 
-      zarfdst="/target/zarfboots"
+      zarfdst="/target/zarf-boots"
       mkdir -p "$zarfdst"
       cp --recursive "$zarfsrc/." "$zarfdst"
 
@@ -47,4 +47,4 @@ autoinstall:
       unlink /target/etc/resolv.conf
       echo -e "nameserver 127.0.0.1\r\nnameserver 1.1.1.1\r\nnameserver 8.8.8.8" > /target/etc/resolv.conf
 
-  version: 1
+      sleep infinity

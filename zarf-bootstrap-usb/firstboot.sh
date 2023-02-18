@@ -3,7 +3,7 @@
 # Safer bash script
 set -euo pipefail
 
-cd /zarfboots
+cd /zarf-boots
 
 ZARF=$( basename $( ls zarf_* ))
 chmod +x "$ZARF"

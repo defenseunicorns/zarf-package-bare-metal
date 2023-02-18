@@ -5,6 +5,7 @@
 # Refs:
 # - https://www.pugetsystems.com/labs/hpc/ubuntu-22-04-server-autoinstall-iso/
 # - https://linuxconfig.org/how-to-create-loop-devices-on-linux
+# - https://wiki.archlinux.org/title/Parted
 # - https://www.thegeekdiary.com/how-to-create-sparse-files-in-linux-using-dd-command/
 # - https://wiki.archlinux.org/title/sparse_file
 
@@ -187,8 +188,10 @@ time cp "$BLANK" "$IMG"
 PART_LABEL="zarf-boots"
 MOUNTPOINT="/mnt/$PART_LABEL" ; mkdir --parents "$MOUNTPOINT"
 
-umount $( mount | grep "$MOUNTPOINT" | awk '{print $1}' )
-losetup --detach $( losetup | grep "$IMG" | awk '{print $1}' )
+if $( losetup --list | grep --silent "$IMG" ) ; then
+  if [ -n "$( mount | grep "$MOUNTPOINT" )" ] ; then umount "$MOUNTPOINT" ; fi
+  losetup --detach $( losetup | grep "$IMG" | awk '{print $1}' )
+fi
 
 
 # mount img file as loop device
@@ -220,6 +223,7 @@ next_sector=$(( "$block_boundary" + 2048 ))
 parted --align optimal "$loop_dev" mkpart "$PART_LABEL" ext4 "$next_sector"s 100%
 data_part="/dev/$( lsblk "$loop_dev" --raw | tail -n 1 | awk '{print $1}' )"
 mkfs -t ext4 "$data_part"
+e2label "$data_part" "$PART_LABEL"
 
 
 # mount new data partition
