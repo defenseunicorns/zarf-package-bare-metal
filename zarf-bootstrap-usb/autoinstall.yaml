@@ -35,7 +35,7 @@ autoinstall:
       cp --recursive "$zarfsrc/." "$zarfdst"
 
       zarf=$( ls "$zarfdst" | grep zarf_ )
-      ln -s "$zarfdst/$zarf" /target/bin/zarf
+      ln -s "$zarfdst/$zarf" /bin/zarf
 
       cp "$zarfdst/firstboot.sh" /target/bin/firstboot.sh
       chmod +x /target/bin/firstboot.sh
@@ -46,5 +46,3 @@ autoinstall:
       curtin in-target --target=/target -- systemctl disable systemd-resolved
       unlink /target/etc/resolv.conf
       echo -e "nameserver 127.0.0.1\r\nnameserver 1.1.1.1\r\nnameserver 8.8.8.8" > /target/etc/resolv.conf
-
-      sleep infinity

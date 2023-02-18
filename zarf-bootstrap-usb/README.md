@@ -94,14 +94,15 @@ Watch it work:
 - ✓ -- get the flippin' USB sync to work!
   - so slow! (30 min to write 2GB?!)
 
-- ? -- reflow the processes so
-  - ✓ build the USB stick against a loop-mounted .img on disk
+- ✓ build the USB stick image against a loop-mounted .img on disk
     - get to boot in Vagrantfile via file mount!
-  - write finished product to USB only once!
-    - get to boot in Vagrantfile via USB
+
+- ? write USB stick image to USB
+  - get to boot in Vagrantfile via USB!
 
 - ? -- refactor big-o'le script into nice function chunks!
   - add some nice status update messages... cuz it's all just rando output right now
+  - remove all the old scripts too
 
 - ? -- Figure out why Zarf PXE package pods won't start
   - some kind of port conflict..?

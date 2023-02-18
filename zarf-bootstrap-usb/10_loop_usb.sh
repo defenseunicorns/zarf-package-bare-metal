@@ -246,6 +246,11 @@ umount "$MOUNTPOINT" ; rm --recursive --force "$MOUNTPOINT"
 losetup --detach "$loop_dev"
 
 
+# set ownership to allow booting via libvirt
+chown libvirt-qemu:kvm "$IMG"
+chmod 777 "$IMG"
+
+
 # # https://www.thegeekdiary.com/how-to-create-sparse-files-in-linux-using-dd-command/
 # dd if="$here/16G-blank.img" of="$here/16G-sparse.img" bs="$BLOCK" conv=sparse oflag=direct status=progress
 # du --apparent-size --human-readable "$here/16G-blank.img" # apparent size
