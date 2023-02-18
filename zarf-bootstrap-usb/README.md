@@ -55,13 +55,14 @@ Watch it work:
 
 ### Activity Log
 - ✓ -- USB build workstation (Ubuntu 20.04)
-  - fdisk, udevadm : to discover / display USB drive
-  - dd, blockdev, sgdisk : to erase / write data on USB drive
-  - mount, unmount : to allow access to USB drive
+  - fdisk, lsblk, udevadm : to discover / display drive information
+  - dd, blockdev, sgdisk, mkfs : to erase / write data to drive
+  - mount, unmount : to allow access to drive
   - curl, sha256sum : to download installer ISO
   - parted, e2label : to lay down new partitions
   - p7zip : to unpack vanilla ISO
   - xorriso : to repack autoinstall-enabled ISO
+  - losetup : for working with loop devices
   - zarf : to build PXE package
 
 - ✓ -- USB stick (wants)
@@ -93,15 +94,20 @@ Watch it work:
 - ✓ -- get the flippin' USB sync to work!
   - so slow! (30 min to write 2GB?!)
 
+- ? -- reflow the processes so
+  - ✓ build the USB stick against a loop-mounted .img on disk
+    - get to boot in Vagrantfile via file mount!
+  - write finished product to USB only once!
+    - get to boot in Vagrantfile via USB
+
+- ? -- refactor big-o'le script into nice function chunks!
+  - add some nice status update messages... cuz it's all just rando output right now
+
 - ? -- Figure out why Zarf PXE package pods won't start
   - some kind of port conflict..?
   - "Warning --> FailedScheduling --> 5m30s --> default-scheduler --> 0/1 nodes are available: 1 node(s) didn't have free ports for the requested pod ports."
 
 - ? -- make sure it works without internet connection on the VM!
-
-- ? -- reflow the processes so
-  - build the USB stick against a loop-mounted .img on disk
-  - write finished product to USB only once!
 
 - ? -- find out if any deps need to be carried over aside from zarf, like:
   - debs f/ OS utils..?
