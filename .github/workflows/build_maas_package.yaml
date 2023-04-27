@@ -39,5 +39,5 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Push Zarf Package
-        run: zarf package publish zarf-package-maas-amd64-${{ github.event.inputs.version }}.tar.zst oci://ghcr.io/defenseunicorns/zarf-package-bare-metal
+        run: zarf package publish zarf-package-maas-amd64-${{ github.event.inputs.version }}.tar.zst oci://ghcr.io/defenseunicorns/zarf-package-maas:${{ github.event.inputs.version }}-amd64
         
