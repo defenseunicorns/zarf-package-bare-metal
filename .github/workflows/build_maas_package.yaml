@@ -3,14 +3,10 @@ run-name: ${{github.actor}} is building the MAAS Zarf Package
 
 on:
   workflow_dispatch:
-    inputs:
-        version:
-          description: 'Specify the version'
-          required: true
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  VERSION: 0.0.1
   
 jobs:
   image-create:
@@ -39,5 +35,5 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Push Zarf Package
-        run: zarf -l debug package publish zarf-package-maas-amd64-${{ github.event.inputs.version }}.tar.zst oci://ghcr.io/defenseunicorns/zarf-package-maas:${{ github.event.inputs.version }}-amd64
+        run: zarf -l debug package publish zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst oci://ghcr.io/defenseunicorns/zarf-package-maas:${{ env.VERSION }}-amd64
         
