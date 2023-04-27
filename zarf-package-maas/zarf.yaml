@@ -1,15 +1,15 @@
 kind: ZarfPackageConfig
 metadata:
-  name: zarf-maas
+  name: maas
   description: "Zarf package with MAAS deployment"
   architecture: amd64
 
 components:
-  - name: zarf-maas
+  - name: maas
     required: true
     manifests:
-      - name: zarf-maas
-        namespace: zarf-maas
+      - name: maas
+        namespace: maas
         files:
           - manifests/deployment.yaml
           - manifests/service.yaml
