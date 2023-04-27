@@ -3,6 +3,7 @@ metadata:
   name: maas
   description: "Zarf package with MAAS deployment"
   architecture: amd64
+  version: 0.0.1
 
 components:
   - name: maas
