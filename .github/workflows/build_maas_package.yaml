@@ -1,4 +1,4 @@
-name: Build MAAS Image
+name: Build MAAS Zarf Package
 run-name: ${{github.actor}} is building the MAAS Zarf Package
 
 on:
