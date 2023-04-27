@@ -12,6 +12,6 @@ components:
         namespace: maas
         files:
           - manifests/deployment.yaml
-          - manifests/service.yaml
+          # - manifests/service.yaml
     images:
       - "ghcr.io/defenseunicorns/zarf-package-bare-metal:main"
