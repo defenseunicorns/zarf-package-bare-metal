@@ -2,7 +2,15 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  # config.vm.box = "generic/ubuntu2204"
+  config.trigger.before :up do |trigger|
+    trigger.info = "Create libvirt storage pool..."
+    trigger.run = { inline: "bash -c './10_pool_up.sh'" }
+  end
+
+  config.trigger.after :destroy do |trigger|
+    trigger.info = "Destroy libvirt storage pool..."
+    trigger.run = { inline: "bash -c './10_pool_down.sh'" }
+  end
 
   config.vm.provider :libvirt do |libvirt|
     libvirt.cpus = 4
