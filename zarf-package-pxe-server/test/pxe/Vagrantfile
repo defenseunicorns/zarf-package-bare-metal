@@ -22,8 +22,8 @@ Vagrant.configure("2") do |config|
     config.vm.provision "shell",
     privileged: true,
     inline: <<-SHELL
-      cp /vagrant/zarf_v0.24.2_Linux_amd64 /usr/local/bin/zarf
-      cp /vagrant/zarf-init-amd64-v0.24.2.tar.zst /home/vagrant/
+      cp /vagrant/zarf_v0.26.1_Linux_amd64 /usr/local/bin/zarf
+      cp /vagrant/zarf-init-amd64-v0.26.1.tar.zst /home/vagrant/
       chmod +x /usr/local/bin/zarf
       mkdir -p /var/images
       zarf init --components=k3s --no-progress --confirm

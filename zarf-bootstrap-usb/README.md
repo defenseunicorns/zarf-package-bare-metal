@@ -115,3 +115,5 @@ Watch it work:
   - anything else NOT zarfable?
 
 - ? -- find a way to notify user that runonce.service has completed successfully... or not?  MotD?  Something else?
+
+- ? -- find a way to build sparse modified iso / usb.img file (currently hard-coded to 16GB)
