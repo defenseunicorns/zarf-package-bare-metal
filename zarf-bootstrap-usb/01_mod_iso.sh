@@ -10,13 +10,13 @@
 # Ubuntu 22.04 Server ISO
 DL="./.downloads" ; mkdir -p "$DL"
 
-URL_ISO="https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso"
+URL_ISO="https://releases.ubuntu.com/22.04.2/ubuntu-22.04.2-live-server-amd64.iso"
 iso=$( basename "$URL_ISO" )
 if [ ! -f "$DL/$iso" ] ; then
   curl --location --output "$DL/$iso" "$URL_ISO"
 fi
 
-URL_SUMS="https://releases.ubuntu.com/22.04.1/SHA256SUMS"
+URL_SUMS="https://releases.ubuntu.com/22.04.2/SHA256SUMS"
 sums=$( basename "$URL_SUMS" )
 if [ ! -f "$DL/$sums" ] ; then
   curl --location --output "$DL/$sums" "$URL_SUMS"

@@ -47,7 +47,7 @@ components:
   - name: iso-mount-and-place
     required: true
     files:
-      - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.1-live-server-amd64.iso
+      - source: https://releases.ubuntu.com/22.04/ubuntu-22.04.2-live-server-amd64.iso
         target: /opt/pxe/httpboot/isos/ubuntu22.iso
     actions:
       onDeploy:
@@ -65,10 +65,11 @@ components:
           - cmd: mkdir -p /opt/pxe/tftpboot/grub/fonts/
           - cmd: cp -p /opt/pxe/ubuntu-iso/casper/vmlinuz /opt/pxe/tftpboot/init/
           - cmd: cp -p /opt/pxe/ubuntu-iso/casper/initrd  /opt/pxe/tftpboot/init/
-          - cmd: dpkg-deb -R /opt/pxe/ubuntu-iso/pool/main/g/grub2-signed/grub-efi-amd64-signed_1.180+2.06-2ubuntu7_amd64.deb /opt/pxe/grub-efi-amd64
-          - cmd: dpkg-deb -R /opt/pxe/ubuntu-iso/pool/main/s/shim-signed/shim-signed_1.51+15.4-0ubuntu9_amd64.deb             /opt/pxe/shim-signed
+          - cmd: dpkg-deb -R /opt/pxe/ubuntu-iso/pool/main/g/grub2-signed/grub-efi-amd64-signed_1.187.3~22.04.1+2.06-2ubuntu14.1_amd64.deb /opt/pxe/grub-efi-amd64
+          - cmd: dpkg-deb -R /opt/pxe/ubuntu-iso/pool/main/s/shim-signed/shim-signed_1.51.3+15.7-0ubuntu1_amd64.deb             /opt/pxe/shim-signed
           - cmd: cp -p /opt/pxe/grub-efi-amd64/usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed /opt/pxe/tftpboot/grubx64.efi
-          - cmd: cp -p /opt/pxe/shim-signed/usr/lib/shim/shimx64.efi.signed                         /opt/pxe/tftpboot/boot/uefi/bootx64.efi
+          # - cmd: cp -p /opt/pxe/shim-signed/usr/lib/shim/shimx64.efi.signed                         /opt/pxe/tftpboot/boot/uefi/bootx64.efi
+          - cmd: cp -p /opt/pxe/shim-signed/usr/lib/shim/shimx64.efi.dualsigned                         /opt/pxe/tftpboot/boot/uefi/bootx64.efi
           - cmd: cp -p /opt/pxe/ubuntu-iso/boot/grub/fonts/unicode.pf2                              /opt/pxe/tftpboot/grub/fonts/
 
   - name: zarf-games-zarf

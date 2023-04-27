@@ -113,3 +113,5 @@ Watch it work:
 - ? -- find out if any deps need to be carried over aside from zarf, like:
   - debs f/ OS utils..?
   - anything else NOT zarfable?
+
+- ? -- find a way to notify user that runonce.service has completed successfully... or not?  MotD?  Something else?

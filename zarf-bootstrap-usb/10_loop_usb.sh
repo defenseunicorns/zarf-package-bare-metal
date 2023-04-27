@@ -69,13 +69,13 @@ ZARF_PXE_PKG="zarf-package-zarf-pxe-amd64.tar.zst"
 
 
 # download installable distro iso
-URL_ISO="https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso"
+URL_ISO="https://releases.ubuntu.com/22.04.2/ubuntu-22.04.2-live-server-amd64.iso"
 iso=$( basename "$URL_ISO" )
 if [ ! -f "$DL/$iso" ] ; then
   curl --location --output "$DL/$iso" "$URL_ISO"
 fi
 
-URL_SUMS="https://releases.ubuntu.com/22.04.1/SHA256SUMS"
+URL_SUMS="https://releases.ubuntu.com/22.04.2/SHA256SUMS"
 sums=$( basename "$URL_SUMS" )
 if [ ! -f "$DL/$sums" ] ; then
   curl --location --output "$DL/$sums" "$URL_SUMS"
@@ -128,6 +128,10 @@ echo "" >> "$grubcfg"
 echo "$boot_option" >> "$grubcfg"
 echo "" >> "$grubcfg"
 echo "$tail" >> "$grubcfg"
+
+
+# disable autoselection of destructive Zarf-paving menuentry
+sed -i 's/set timeout=30/set timeout=-1/' "$grubcfg"
 
 
 # add autoinstall config directory
@@ -199,7 +203,7 @@ losetup --partscan --find "$IMG"
 loop_dev=$( losetup | grep "$IMG" | awk '{print $1}' )
 
 
-# write iso to USB
+# write iso to img file
 dd if="$ZARF_ISO" of="$loop_dev" bs="$BLOCK" oflag=direct status=progress
 
 

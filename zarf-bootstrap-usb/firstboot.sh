@@ -10,9 +10,9 @@ chmod +x "$ZARF"
 
 PXE_PKG=$( basename $( ls zarf-package-zarf-pxe* ))
 
-./$ZARF init --confirm --components k3s --set K3S_ARGS=""
+./$ZARF init --confirm --components k3s --no-progress
 
-./$ZARF package deploy "$PXE_PKG" --confirm
+./$ZARF package deploy "$PXE_PKG" --confirm --no-progress
 
 systemctl disable runonce.service
 

@@ -32,6 +32,12 @@ case "$cmd0" in
   'build')
     function _() {
       echo "TODO"
+      # LOOP_DIR="$here/.loop_usb"
+      # ZARF_PKG="$here/.downloads/zarf-package*"
+
+      # $me vm destroy
+      # rm -rf "$LOOP_DIR" "$ZARF_PKG"
+      # $here/10_loop_usb.sh
     }
     time _
   ;;
