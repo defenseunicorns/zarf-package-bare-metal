@@ -2,5 +2,6 @@
 .downloads
 .mod_iso
 .loop_usb
+.mnt
 *.iso
 *.img

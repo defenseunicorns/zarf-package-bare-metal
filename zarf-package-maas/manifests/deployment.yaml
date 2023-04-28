@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zarf-maas
+  labels:
+    app: zarf-maas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zarf-maas
+  template:
+    metadata:
+      labels:
+        app: zarf-maas
+    spec:
+      hostNetwork: true
+      containers:
+        - name: zarf-maas
+          image: ghcr.io/defenseunicorns/zarf-package-bare-metal:main
+          command: ["/sbin/init"]
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          resources:
+            limits:
+              cpu: "4"
+              memory: "4096Mi"
+          volumeMounts:
+            - name: sys-fs-cgroup
+              mountPath: /sys/fs/cgroup
+              readOnly: false
+            - name: tmpfs-tmp
+              mountPath: /tmp
+              readOnly: false
+            - name: tmpfs-run
+              mountPath: /run
+              readOnly: false
+            - name: tmpfs-lock
+              mountPath: /run/lock
+              readOnly: false
+      volumes:
+        - name: sys-fs-cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+        - name: tmpfs-tmp
+          emptyDir:
+            medium: Memory
+        - name: tmpfs-run
+          emptyDir:
+            medium: Memory
+        - name: tmpfs-lock
+          emptyDir:
+            medium: Memory

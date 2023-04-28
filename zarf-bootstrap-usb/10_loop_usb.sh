@@ -1,6 +1,4 @@
 #!/bin/bash
-# Reqs:
-# - run as root (i.e. sudo)
 #
 # Refs:
 # - https://www.pugetsystems.com/labs/hpc/ubuntu-22-04-server-autoinstall-iso/
@@ -13,13 +11,19 @@
 here=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 
+# get sudo permission
+echo "Can haz sudo?"
+sudo echo "Thank you!"
+
+
 # download & build zarf
 DL="$here/.downloads" ; mkdir --parents "$DL"
 
 ZARF_RELS="https://github.com/defenseunicorns/zarf/releases/download"
-REMOTE_ZARF_INIT="${ZARF_RELS}/v0.24.2/zarf-init-amd64-v0.24.2.tar.zst"
-REMOTE_ZARF_BIN="${ZARF_RELS}/v0.24.2/zarf_v0.24.2_Linux_amd64"
-REMOTE_ZARF_SUMS="${ZARF_RELS}/v0.24.2/checksums.txt"
+ZARF_VER="v0.26.1"
+REMOTE_ZARF_INIT="${ZARF_RELS}/${ZARF_VER}/zarf-init-amd64-${ZARF_VER}.tar.zst"
+REMOTE_ZARF_BIN="${ZARF_RELS}/${ZARF_VER}/zarf_${ZARF_VER}_Linux_amd64"
+REMOTE_ZARF_SUMS="${ZARF_RELS}/${ZARF_VER}/checksums.txt"
 
 ZARF_SUMS=$( basename "$REMOTE_ZARF_SUMS" )
 if [ ! -f "$DL/$ZARF_SUMS" ] ; then
@@ -55,6 +59,7 @@ fi
 echo "sha256sum: $sumcheck"
 
 chmod +x "$DL/$ZARF_BIN"
+
 
 # build Zarf PXE package
 ZARF_PXE_PKG="zarf-package-zarf-pxe-amd64.tar.zst"
@@ -190,32 +195,32 @@ time cp "$BLANK" "$IMG"
 
 # unmount any still-mounted loop devices from previous runs
 PART_LABEL="zarf-boots"
-MOUNTPOINT="/mnt/$PART_LABEL" ; mkdir --parents "$MOUNTPOINT"
+MOUNTPOINT="$here/.mnt/$PART_LABEL" ; mkdir --parents "$MOUNTPOINT"
 
 if $( losetup --list | grep --silent "$IMG" ) ; then
   if [ -n "$( mount | grep "$MOUNTPOINT" )" ] ; then umount "$MOUNTPOINT" ; fi
-  losetup --detach $( losetup | grep "$IMG" | awk '{print $1}' )
+  sudo losetup --detach $( losetup | grep "$IMG" | awk '{print $1}' )
 fi
 
 
 # mount img file as loop device
-losetup --partscan --find "$IMG"
+sudo losetup --partscan --find "$IMG"
 loop_dev=$( losetup | grep "$IMG" | awk '{print $1}' )
 
 
 # write iso to img file
-dd if="$ZARF_ISO" of="$loop_dev" bs="$BLOCK" oflag=direct status=progress
+sudo dd if="$ZARF_ISO" of="$loop_dev" bs="$BLOCK" oflag=direct status=progress
 
 
 # expand GPT to fill entire USB
 # https://community.tenable.com/s/article/Unable-to-satisfy-all-constraints-on-the-partition-when-expanding-Tenable-Core-disk
 # https://unix.stackexchange.com/questions/317564/expanding-a-disk-with-a-gpt-table
-sgdisk --move-second-header "$loop_dev"
+sudo sgdisk --move-second-header "$loop_dev"
 
 
 # add data partition (filling remaining space)
 last_sector=$(
-  parted "$loop_dev" --script 'unit s print' \
+  sudo parted "$loop_dev" --script 'unit s print' \
     | grep '^ 3' | awk '{print $3}' \
     | sed 's/s//' )
 
@@ -224,35 +229,35 @@ last_sector=$(
 block_boundary=$(( "$last_sector" - ( "$last_sector" % 2048 ) ))
 next_sector=$(( "$block_boundary" + 2048 ))
 
-parted --align optimal "$loop_dev" mkpart "$PART_LABEL" ext4 "$next_sector"s 100%
+sudo parted --align optimal "$loop_dev" mkpart "$PART_LABEL" ext4 "$next_sector"s 100%
 data_part="/dev/$( lsblk "$loop_dev" --raw | tail -n 1 | awk '{print $1}' )"
-mkfs -t ext4 "$data_part"
-e2label "$data_part" "$PART_LABEL"
+sudo mkfs -t ext4 "$data_part"
+sudo e2label "$data_part" "$PART_LABEL"
 
 
 # mount new data partition
-mount "$data_part" "$MOUNTPOINT"
+sudo mount "$data_part" "$MOUNTPOINT"
 
 # delete unnecessary recovery dir
 # https://www.baeldung.com/linux/lost-found-directory
-rm --recursive --force "$MOUNTPOINT/lost+found"
+sudo rm --recursive --force "$MOUNTPOINT/lost+found"
 
 
 # copy deps to mountpoint
-cp \
+sudo cp \
   "$DL/$ZARF_BIN" "$DL/$ZARF_INIT" "$DL/$ZARF_PXE_PKG" \
   "$here/firstboot.sh" "$here/runonce.service" \
   "$MOUNTPOINT"
 
 
 # unmount / remove img file from loop device
-umount "$MOUNTPOINT" ; rm --recursive --force "$MOUNTPOINT"
-losetup --detach "$loop_dev"
+sudo umount "$MOUNTPOINT" ; rm --recursive --force "$MOUNTPOINT"
+sudo losetup --detach "$loop_dev"
 
 
 # set ownership to allow booting via libvirt
-chown libvirt-qemu:kvm "$IMG"
 chmod 777 "$IMG"
+sudo chown libvirt-qemu:kvm "$IMG"
 
 
 # # https://www.thegeekdiary.com/how-to-create-sparse-files-in-linux-using-dd-command/

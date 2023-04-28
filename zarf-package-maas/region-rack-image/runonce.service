@@ -1,0 +1,13 @@
+[Unit]
+Description=Add MAAS Admin User
+After=postgresql.service
+
+[Service]
+Type=simple
+User=root
+Environment="TERM=linux"
+ExecStart=/bin/addmaasuser.sh
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

@@ -1,42 +1,37 @@
+# Run with Docker standalone using:
+# docker build . -t maas
+# docker run -it --cgroupns=host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup -p 5240:5240 maas
+
 FROM ubuntu:22.04
 
-RUN apt update
+RUN apt update -qq && \
+    apt install -y software-properties-common
 
-RUN apt install -y software-properties-common
+RUN apt-add-repository -y ppa:maas/3.3-next 
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-add-repository -y ppa:maas/3.3-next
+RUN apt install -y --no-install-recommends tzdata && \
+    apt install maas -y
 
-RUN apt update
+# Install: dependencies, clean: apt cache, remove dir: cache, man, doc, change mod time of cache dir.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       software-properties-common \
+       rsyslog systemd systemd-cron sudo \
+    && apt-get clean \
+    && rm -Rf /usr/share/doc && rm -Rf /usr/share/man \
+    && rm -rf /var/lib/apt/lists/* \
+    && touch -d "2 hours ago" /var/lib/apt/lists
+RUN sed -i 's/^\($ModLoad imklog\)/#\1/' /etc/rsyslog.conf
 
-RUN DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends tzdata
+RUN rm -f /lib/systemd/system/systemd*udev* \
+  && rm -f /lib/systemd/system/getty.target
 
-RUN apt install maas-rack-controller maas-region-api dbconfig-pgsql -y
-RUN apt download maas-region-controller
-RUN dpkg --install --ignore-depends=postgresql maas-region-controller*.deb
-RUN apt install python3-django-maas -y
+COPY addmaasuser.sh /bin/addmaasuser.sh
+COPY runonce.service /usr/lib/systemd/system/runonce.service
 
-# FROM ubuntu:22.04 as maas-unpacker
+RUN chmod +x /bin/addmaasuser.sh \
+  && systemctl enable runonce.service
 
-# RUN apt update
-
-# RUN apt install -y  squashfs-tools
-
-# COPY maas.snap /tmp/maas.snap
-
-# RUN mkdir -p /maas
-
-# RUN unsquashfs /tmp/maas.snap
-
-# FROM ubuntu:22.04
-
-# COPY --from=maas-unpacker /squashfs-root/ /
-
-# # software-properties-common
-
-# # RUN apt-add-repository -y ppa:maas/3.3-next
-
-# # RUN apt update
-
-# # RUN DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends tzdata
-
-# # RUN apt-get install -y maas postgresql-
+VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
+CMD ["/lib/systemd/systemd"]

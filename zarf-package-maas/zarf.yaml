@@ -1,0 +1,17 @@
+kind: ZarfPackageConfig
+metadata:
+  name: maas
+  description: "Zarf package with MAAS deployment"
+  architecture: amd64
+  version: 0.0.2
+
+components:
+  - name: maas
+    required: true
+    manifests:
+      - name: maas
+        namespace: maas
+        files:
+          - manifests/deployment.yaml
+    images:
+      - "ghcr.io/defenseunicorns/zarf-package-bare-metal:main"

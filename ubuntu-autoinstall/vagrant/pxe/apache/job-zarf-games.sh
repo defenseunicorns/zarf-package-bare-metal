@@ -6,7 +6,7 @@ set -euo pipefail
 cd /root
 
 wget http://192.168.0.254/roles/zarf-games/zarf -q
-wget http://192.168.0.254/roles/zarf-games/zarf-init-amd64-v0.24.2.tar.zst -q
+wget http://192.168.0.254/roles/zarf-games/zarf-init-amd64-v0.26.1.tar.zst -q
 wget http://192.168.0.254/roles/zarf-games/zarf-package-dos-games-amd64.tar.zst -q
 
 chmod +x ./zarf

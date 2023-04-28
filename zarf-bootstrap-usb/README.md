@@ -100,18 +100,32 @@ Watch it work:
 - ? write USB stick image to USB
   - get to boot in Vagrantfile via USB!
 
-- ? -- refactor big-o'le script into nice function chunks!
-  - add some nice status update messages... cuz it's all just rando output right now
-  - remove all the old scripts too
-
-- ? -- Figure out why Zarf PXE package pods won't start
+- ✓ -- Figure out why Zarf PXE package pods won't start
   - some kind of port conflict..?
   - "Warning --> FailedScheduling --> 5m30s --> default-scheduler --> 0/1 nodes are available: 1 node(s) didn't have free ports for the requested pod ports."
+  - as passing args to K3S that caused Traefik to start which cause conflict
+    - rm'd the K3S flags and everything went well
 
 - ? -- make sure it works without internet connection on the VM!
-
-- ? -- find out if any deps need to be carried over aside from zarf, like:
-  - debs f/ OS utils..?
-  - anything else NOT zarfable?
+  - test on airgapped hardware!
 
 - ? -- find a way to notify user that runonce.service has completed successfully... or not?  MotD?  Something else?
+
+- ? -- find a way to build sparse modified iso / usb.img file (currently hard-coded to 16GB)
+  - https://www.libguestfs.org/virt-sparsify.1.html ..?
+
+- ? -- get usb.img build into one-or-more containers.
+
+- ? -- add folder-based placeholder for containing files we want burned and them add them to the usb.img during creation
+
+- ? -- currently using hard-coded 16GB blank.img / usb.img, which... takes too long to dd to disk
+  - move to multi-stage USB creation where:
+    - download zarf deps & size them
+    - inspect "me too" deps directory & size it
+    - create a zeroized base.img that can just-barely hold all that
+    - dd ubuntu iso onto base.img
+    - add data partition to base.img
+    - loopback mount data partition & copy over deps
+    - umount loopback
+    - write base.img to usb device (so dd'ing 5GB instead of 16GB)
+    - post-write, expand data partition to fill remaining space on disk

@@ -33,3 +33,32 @@ some classic games that run in k3s on the client.
 
 [[More Info](zarf-package-pxe-server)]
 
+### zarf-package-maas
+
+The `zarf-package-maas` subproject defines a Zarf package `zarf-maas`. This will be an alternative to using the dnsmasq Zarf package in `zarf-pxe`. This package has three parts:
+
+1. Container build definition in `region-rack-image`. This Dockerfile will build a container containing
+   Canonical's MAAS. MAAS needs systemd to run, so `systemd` is the entrypoint for the container. Additional
+   init scripts for MAAS are provided in the form of a systemd unit file `runonce.service` and shell script
+   `addmaasuser.sh`
+
+   To run the docker image by itself, for testing, run:
+
+```shell
+docker build . -t maas
+docker run -it --cgroupns=host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup -p 5240:5240 maas
+```
+
+  You can access the MAAS web interface at `http://yourmachineIP:5240` and login with default `admin:admin` credentials.
+
+  The build for this container is also available as a GitHub Action, defined in `.github/workflows/build_container.yaml`
+
+2. Zarf package and associated manifests in `zarf.yaml` and folder `manifests`. 
+
+  The build for this Zarf package is also available as a GitHub Action, defined in `.github/workflows/build_maas_package.yaml`
+
+  When running this, you'll need to bump the version number in the workflow as well as the `zarf.yaml` file.
+
+3. Test Vagrantfiles. These are a work in progress. At current the `maas/Vagrantfile` will successfully set up Zarf
+   and deploy the MAAS Zarf package. It runs, though we're still figuring out how to access it via Vagrant's network
+   interface.
