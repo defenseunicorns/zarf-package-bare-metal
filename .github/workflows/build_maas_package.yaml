@@ -36,8 +36,28 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Push Zarf Package
+      - name: Push Zarf Package to OCI
         run: |
           ls
           zarf -l debug package publish ./zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst oci://ghcr.io/defenseunicorns/packages
         
+      - name: Create release for MAAS package
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
+          draft: true
+          prerelease: true
+      
+      - name: Upload Zarf Package to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst
+          asset_name: zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst
+          asset_content_type: application/x-tar+zstd

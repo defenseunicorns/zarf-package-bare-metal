@@ -24,15 +24,12 @@ Vagrant.configure("2") do |config|
     inline: <<-SHELL
       cp /vagrant/zarf_v0.26.1_Linux_amd64 /usr/local/bin/zarf
       cp /vagrant/zarf-init-amd64-v0.26.1.tar.zst /home/vagrant/
+      # mkdir -p /root/.docker
+      # cp /vagrant/config.json /root/.docker/config.json
       chmod +x /usr/local/bin/zarf
       mkdir -p /var/images
-      mkdir -p ~/.docker
-      cat <<EOF > ~/.docker/config.json
-      {
-        "auths": {}
-      }
-      EOF
       zarf init --components=k3s --no-progress --confirm
-      zarf package deploy oci://ghcr.io/defenseunicorns/packages/maas:0.0.1-amd64 --confirm
+      # zarf package deploy oci://ghcr.io/defenseunicorns/packages/maas:0.0.1-amd64 --confirm
+      zarf package deploy zarf-package-maas-v0.0.1-amd64.zarf --confirm
     SHELL
   end
