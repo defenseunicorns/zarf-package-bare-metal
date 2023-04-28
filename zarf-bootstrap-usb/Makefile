@@ -28,11 +28,11 @@ vagrant-up-img: ## bring up usb.img-based vagrant-libvirt VM
 vagrant-destroy-img: ## destroy usb.img-based vagrant-libvirt VM
 	VAGRANT_VAGRANTFILE=Vagrantfile_img vagrant destroy -f
 
-# vagrant-up-usb: ## bring up usb device-based vagrant-libvirt VM
-# 	VAGRANT_VAGRANTFILE=Vagrantfile_usb vagrant up
+vagrant-up-usb: ## bring up usb device-based vagrant-libvirt VM
+	VAGRANT_VAGRANTFILE=Vagrantfile_usb vagrant up
 
-# vagrant-destroy-img: ## destroy usb device-based vagrant-libvirt VM
-# 	VAGRANT_VAGRANTFILE=Vagrantfile_usb vagrant destroy -f
+vagrant-destroy-usb: ## destroy usb device-based vagrant-libvirt VM
+	VAGRANT_VAGRANTFILE=Vagrantfile_usb vagrant destroy -f
 
 help: ## display this help information
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
