@@ -52,6 +52,11 @@ jobs:
           draft: true
           prerelease: true
       
+      - name: Debugging
+        run: |
+          ls
+          pwd
+
       - name: Upload Zarf Package to release
         uses: actions/upload-release-asset@v1
         env:
