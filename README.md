@@ -32,3 +32,4 @@ The `zarf-pxe` server will instruct clients to install Ubuntu (unattended). This
 some classic games that run in k3s on the client.
 
 [[More Info](zarf-package-pxe-server)]
+
