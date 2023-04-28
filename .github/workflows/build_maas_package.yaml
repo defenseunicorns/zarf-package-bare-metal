@@ -39,5 +39,5 @@ jobs:
       - name: Push Zarf Package
         run: |
           ls
-          zarf -l debug package publish ./zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst oci://ghcr.io/defenseunicorns/zarf-package-maas:${{ env.VERSION }}-amd64
+          zarf -l debug package publish ./zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst https://ghcr.io/defenseunicorns/zarf-package-maas:${{ env.VERSION }}-amd64
         
