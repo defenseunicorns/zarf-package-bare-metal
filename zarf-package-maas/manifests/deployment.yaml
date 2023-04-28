@@ -20,7 +20,7 @@ spec:
           image: ghcr.io/defenseunicorns/zarf-package-bare-metal:main
           command: ["/sbin/init"]
           securityContext:
-#            privileged: true
+            privileged: true
             capabilities:
               add:
                 - SYS_ADMIN
