@@ -63,6 +63,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst
+          asset_path: ./zarf-package-maas/zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst
           asset_name: zarf-package-maas-amd64-${{ env.VERSION }}.tar.zst
           asset_content_type: application/x-tar+zstd
