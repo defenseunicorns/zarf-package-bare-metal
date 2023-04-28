@@ -1,3 +1,7 @@
+# Run with Docker standalone using:
+# docker build . -t maas
+# docker run -it --cgroupns=host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup -p 5240:5240 maas
+
 FROM ubuntu:22.04
 
 RUN apt update -qq && \

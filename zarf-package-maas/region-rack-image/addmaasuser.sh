@@ -3,5 +3,6 @@
 # This script is used to add a user to the MAAS server
 # and initialize MAAS for use.
 
-maas init --admin-username ${ADMIN_USER} --admin-password ${ADMIN_PASS} --rbac_url="" --candid-agent-file=""
+maas init --admin-username admin --admin-password admin --admin-email 'x@x.com' --rbac_url="" --candid-agent-file=""
+maas createadmin --username admin --password admin --email "x@x.com"
 systemctl disable runonce.service
