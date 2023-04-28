@@ -24,6 +24,7 @@ Vagrant.configure("2") do |config|
     inline: <<-SHELL
       cp /vagrant/zarf_v0.26.1_Linux_amd64 /usr/local/bin/zarf
       cp /vagrant/zarf-init-amd64-v0.26.1.tar.zst /home/vagrant/
+      cp /vagrant/zarf-package-maas-amd64-0.0.1.tar.zst /home/vagrant/
       # mkdir -p /root/.docker
       # cp /vagrant/config.json /root/.docker/config.json
       chmod +x /usr/local/bin/zarf
