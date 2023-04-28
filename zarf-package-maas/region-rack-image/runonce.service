@@ -1,6 +1,6 @@
 [Unit]
 Description=Add MAAS Admin User
-After=maas-regiond.service
+After=postgresql.service
 
 [Service]
 Type=simple
