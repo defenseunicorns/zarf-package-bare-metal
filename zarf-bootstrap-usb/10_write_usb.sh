@@ -73,3 +73,11 @@ esac
 USB_IMG="$here/.loop_usb/usb.img"
 BLOCK=$( numfmt --from=iec-i 4Ki )
 sudo dd if="$USB_IMG" of="$selected_dev" bs="$BLOCK" conv=sparse oflag=direct status=progress
+
+# appears to work but getting this after trying to run parted on dd'd dev:
+#   Error: The backup GPT table is corrupt, but the primary appears OK, so that will be used.
+#   Warning: Not all of the space available to /dev/sda appears to be used, you can fix the GPT to use all
+#   of the space (an extra 458041344 blocks) or continue with the current setting?
+
+# perhaps something about conv=sparse is ruining the GPT table?
+# try running the "sudo sgdisk --move-second-header "$loop_dev" again..?
