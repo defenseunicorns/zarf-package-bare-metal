@@ -23,6 +23,11 @@ RUN sed -i 's/^\($ModLoad imklog\)/#\1/' /etc/rsyslog.conf
 RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
 
+COPY addmaasuser.sh /bin/addmaasuser.sh
+COPY runonce.service /usr/lib/systemd/system/runonce.service
+
+RUN chmod +x /bin/addmaasuser.sh \
+  && systemctl enable runonce.service
 
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 CMD ["/lib/systemd/systemd"]
