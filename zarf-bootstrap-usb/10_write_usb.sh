@@ -3,6 +3,8 @@
 # - https://help.ubuntu.com/community/UbuntuStudio/UsbAudioDevices
 # - https://opensource.com/article/18/5/you-dont-know-bash-intro-bash-arrays
 # - https://askubuntu.com/questions/423300/live-usb-on-a-2-partition-usb-drive
+# - https://askubuntu.com/questions/645/how-do-you-reset-a-usb-device-from-the-command-line
+# - https://stackoverflow.com/questions/18605701/get-unique-serial-number-of-usb-device-mounted-to-dev-folder
 
 here=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -71,13 +73,24 @@ esac
 
 # write usb.img to selected USB
 USB_IMG="$here/.loop_usb/usb.img"
-BLOCK=$( numfmt --from=iec-i 4Ki )
-sudo dd if="$USB_IMG" of="$selected_dev" bs="$BLOCK" conv=sparse oflag=direct status=progress
+BLOCK=$( numfmt --from=iec-i 4Mi )
+sudo dd if="$USB_IMG" of="$selected_dev" bs="$BLOCK" conv=sparse,fsync oflag=direct status=progress
+
 
 # appears to work but getting this after trying to run parted on dd'd dev:
 #   Error: The backup GPT table is corrupt, but the primary appears OK, so that will be used.
 #   Warning: Not all of the space available to /dev/sda appears to be used, you can fix the GPT to use all
 #   of the space (an extra 458041344 blocks) or continue with the current setting?
 
-# perhaps something about conv=sparse is ruining the GPT table?
-# try running the "sudo sgdisk --move-second-header "$loop_dev" again..?
+# fix corrupt secondary GPT table
+sudo sgdisk --move-second-header "$selected_dev"
+
+# disconnect & reconnect device so kernel uses updated device GPT
+# /devices/pci0000:00/0000:00:14.0/usb2/2-3/2-3:1.0/host0/target0:0:0/0:0:0:0/block/sda
+devpath=$( sudo udevadm info --name "$selected_dev" | grep DEVPATH | cut -d '=' -f2 )
+# /sys/devices/pci0000:00/0000:00:14.0/usb2
+usbpath="/sys$( echo "$devpath" | grep --only-matching ".*usb[0-9]\+" )"
+
+# ummount any mounted partitions & dis/re-connect the USB device
+sudo umount "${selected_dev}*"
+sudo partprobe "$selected_dev"
