@@ -92,5 +92,5 @@ devpath=$( sudo udevadm info --name "$selected_dev" | grep DEVPATH | cut -d '=' 
 usbpath="/sys$( echo "$devpath" | grep --only-matching ".*usb[0-9]\+" )"
 
 # ummount any mounted partitions & dis/re-connect the USB device
-sudo umount "${selected_dev}*"
+sudo umount "${selected_dev}"*
 sudo partprobe "$selected_dev"
