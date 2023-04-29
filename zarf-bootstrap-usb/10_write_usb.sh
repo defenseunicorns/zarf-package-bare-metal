@@ -85,12 +85,6 @@ sudo dd if="$USB_IMG" of="$selected_dev" bs="$BLOCK" conv=sparse,fsync oflag=dir
 # fix corrupt secondary GPT table
 sudo sgdisk --move-second-header "$selected_dev"
 
-# disconnect & reconnect device so kernel uses updated device GPT
-# /devices/pci0000:00/0000:00:14.0/usb2/2-3/2-3:1.0/host0/target0:0:0/0:0:0:0/block/sda
-devpath=$( sudo udevadm info --name "$selected_dev" | grep DEVPATH | cut -d '=' -f2 )
-# /sys/devices/pci0000:00/0000:00:14.0/usb2
-usbpath="/sys$( echo "$devpath" | grep --only-matching ".*usb[0-9]\+" )"
-
 # ummount any mounted partitions & dis/re-connect the USB device
 sudo umount "${selected_dev}"*
 sudo partprobe "$selected_dev"
