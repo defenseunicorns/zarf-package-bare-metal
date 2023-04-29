@@ -97,7 +97,7 @@ Watch it work:
 - ✓ build the USB stick image against a loop-mounted .img on disk
     - get to boot in Vagrantfile via file mount!
 
-- ? write USB stick image to USB
+- ✓ write USB stick image to USB
   - get to boot in Vagrantfile via USB!
 
 - ✓ -- Figure out why Zarf PXE package pods won't start
@@ -111,15 +111,14 @@ Watch it work:
 
 - ? -- find a way to notify user that runonce.service has completed successfully... or not?  MotD?  Something else?
 
-- ? -- find a way to build sparse modified iso / usb.img file (currently hard-coded to 16GB)
-  - https://www.libguestfs.org/virt-sparsify.1.html ..?
-
 - ? -- get usb.img build into one-or-more containers.
 
 - ? -- add folder-based placeholder for containing files we want burned and them add them to the usb.img during creation
 
 - ? -- currently using hard-coded 16GB blank.img / usb.img, which... takes too long to dd to disk
-  - move to multi-stage USB creation where:
+  - find a way to build sparse modified iso / usb.img file (currently hard-coded to 16GB)
+    - https://www.libguestfs.org/virt-sparsify.1.html ..?
+  - OR, move to multi-stage USB creation where:
     - download zarf deps & size them
     - inspect "me too" deps directory & size it
     - create a zeroized base.img that can just-barely hold all that

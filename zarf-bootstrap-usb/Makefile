@@ -1,10 +1,5 @@
 HERE := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-build: ## produces ready-to-burn bootable USB img
-	@$(HERE)10_loop_usb.sh
-
-rebuild: clean-mnt clean-mod clean-loop build ## cleans all-but-download-cache & builds usb.img
-
 clean-downloads: ##
 	rm -rf $(HERE).downloads
 
@@ -19,8 +14,13 @@ clean-mod: ##
 
 clean: clean-downloads clean-mnt clean-loop clean-mod ## delete all working dirs
 
-# write-usb: ## usb.img --> /dev/usb-blah-blah
-# 	# https://stackoverflow.com/questions/714100/os-detecting-makefile
+build: ## produces ready-to-burn bootable USB img
+	@$(HERE)10_loop_usb.sh
+
+rebuild: clean-mnt clean-mod clean-loop build ## cleans all-but-download-cache & builds usb.img
+
+write: ## writes ready-to-burn bootable USB img to user-selected USB drive
+	@$(HERE)10_write_usb.sh
 
 vagrant-up-img: ## bring up usb.img-based vagrant-libvirt VM
 	VAGRANT_VAGRANTFILE=Vagrantfile_img vagrant up
