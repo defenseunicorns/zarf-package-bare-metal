@@ -3,7 +3,7 @@ metadata:
   name: maas
   description: "Zarf package with a Canonical MaaS deployment"
   architecture: amd64
-  version: 0.0.3
+  version: 0.0.4
 
 components:
   - name: maas-snap
@@ -19,6 +19,19 @@ components:
       - source: zarf-package-maas-snap-amd64-0.0.2.tar.zst
         target: zarf-package-maas-snap-amd64-0.0.2.tar.zst
 
+  - name: maas-packer
+    required: true
+    actions:
+      onCreate:
+        before:
+          - cmd: ./zarf package pull oci://ghcr.io/defenseunicorns/packages/maas-packer:0.0.2-amd64
+      onDeploy:
+        after:
+          - cmd: ./zarf package deploy zarf-package-maas-packer-amd64-0.0.2.tar.zst --confirm
+    files:
+      - source: zarf-package-maas-packer-amd64-0.0.2.tar.zst
+        target: zarf-package-maas-packer-amd64-0.0.2.tar.zst
+
   - name: maas-cfg
     required: true
     actions:
@@ -27,3 +40,9 @@ components:
          - cmd: |
             maas init region+rack --database-uri maas-test-db:/// --maas-url http://0.0.0.0:5240/MAAS
             maas createadmin --username admin --password admin --email 'x@x.com'
+            maas apikey --username=admin > api-key-file
+            maas login admin http://127.0.0.1:5240/MAAS/api/2.0/ $(head -1 api-key-file)
+            mkdir -p /home/$USER
+            cp custom-cloudimg.tar.gz /home/$USER/custom-cloudimg.tar.gz
+            sleep 10
+            maas admin boot-resources create name=custom/ubuntu-zarf title="Ubuntu 22.04 w/Zarf" architecture="amd64/generic" content@=/home/$USER/custom-cloudimg.tar.gz
