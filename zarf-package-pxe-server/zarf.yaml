@@ -76,9 +76,9 @@ components:
     required: true
     cosignKeyPath: cosign.pub
     files:
-      - source: https://github.com/defenseunicorns/zarf/releases/download/v0.27.2/zarf-init-amd64-v0.27.2.tar.zst
-        target: /opt/pxe/httpboot/zarf/zarf-games/zarf-init-amd64-v0.27.2.tar.zst
-      - source: https://github.com/defenseunicorns/zarf/releases/download/v0.27.2/zarf_v0.27.2_Linux_amd64
+      - source: https://github.com/defenseunicorns/zarf/releases/download/v0.27.1/zarf-init-amd64-v0.27.1.tar.zst
+        target: /opt/pxe/httpboot/zarf/zarf-games/zarf-init-amd64-v0.27.1.tar.zst
+      - source: https://github.com/defenseunicorns/zarf/releases/download/v0.27.1/zarf_v0.27.1_Linux_amd64
         target: /opt/pxe/httpboot/zarf/zarf-games/zarf
       - source: sget://defenseunicorns/zarf-hello-world:amd64
         target: /opt/pxe/httpboot/zarf/zarf-games/zarf-package-dos-games-amd64.tar.zst

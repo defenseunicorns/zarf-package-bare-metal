@@ -22,7 +22,7 @@ jobs:
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@main
         with:
-          version: v0.27.2
+          version: v0.27.1
     
       - name: Build Zarf Package
         run: |

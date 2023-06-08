@@ -41,7 +41,7 @@ data:
     cd /root
 
     wget http://192.168.0.254/zarf/zarf-games/zarf -q
-    wget http://192.168.0.254/zarf/zarf-games/zarf-init-amd64-v0.27.2.tar.zst -q
+    wget http://192.168.0.254/zarf/zarf-games/zarf-init-amd64-v0.27.1.tar.zst -q
     wget http://192.168.0.254/zarf/zarf-games/zarf-package-dos-games-amd64.tar.zst -q
 
     chmod +x ./zarf

@@ -20,7 +20,7 @@ sudo echo "Thank you!"
 DL="$here/.downloads" ; mkdir --parents "$DL"
 
 ZARF_RELS="https://github.com/defenseunicorns/zarf/releases/download"
-ZARF_VER="v0.27.2"
+ZARF_VER="v0.27.1"
 REMOTE_ZARF_INIT="${ZARF_RELS}/${ZARF_VER}/zarf-init-amd64-${ZARF_VER}.tar.zst"
 REMOTE_ZARF_BIN="${ZARF_RELS}/${ZARF_VER}/zarf_${ZARF_VER}_Linux_amd64"
 REMOTE_ZARF_SUMS="${ZARF_RELS}/${ZARF_VER}/checksums.txt"
