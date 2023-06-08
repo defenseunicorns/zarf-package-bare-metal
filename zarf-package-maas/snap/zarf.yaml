@@ -1,0 +1,23 @@
+kind: ZarfPackageConfig
+metadata:
+  name: maas-snap
+  description: "Zarf package with MAAS deployment"
+  architecture: amd64
+  version: 0.0.1
+
+components:
+  - name: maas-snap
+    required: true
+    files:
+      - source: maas_27405.assert
+        target: maas_27405.assert
+      - source: maas_27405.snap
+        target: maas_27405.snap
+    actions:
+      onCreate:
+        before:
+          - cmd: snap download maas
+      onDeploy:
+        after:
+          - cmd: snap ack maas_27405.assert
+          - cmd: snap install maas_27405.snap

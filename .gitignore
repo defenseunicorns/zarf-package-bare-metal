@@ -2,3 +2,5 @@
 .DS_Store
 *.tar.zst
 zarf_*_amd64
+*.snap
+*.assert
