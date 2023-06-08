@@ -3,7 +3,7 @@ metadata:
   name: maas-snap
   description: "Zarf package with MAAS deployment"
   architecture: amd64
-  version: 0.0.1
+  version: 0.0.2
 
 components:
   - name: maas-snap
@@ -13,11 +13,18 @@ components:
         target: maas_27405.assert
       - source: maas_27405.snap
         target: maas_27405.snap
+      - source: maas-test-db_131.assert
+        target: maas-test-db_131.assert
+      - source: maas-test-db_131.snap
+        target: maas-test-db_131.snap
     actions:
       onCreate:
         before:
           - cmd: snap download maas
+          - cmd: snap download maas-test-db
       onDeploy:
         after:
           - cmd: snap ack maas_27405.assert
           - cmd: snap install maas_27405.snap
+          - cmd: snap ack maas-test-db_131.assert
+          - cmd: snap install maas-test-db_131.snap
