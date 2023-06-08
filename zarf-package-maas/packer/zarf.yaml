@@ -1,0 +1,18 @@
+kind: ZarfPackageConfig
+metadata:
+  name: maas-packer
+  description: "Zarf package with MAAS custom image"
+  architecture: amd64
+  version: 0.0.2
+
+components:
+  - name: maas-packer
+    required: true
+    files:
+      - source: ./ubuntu/custom-cloudimg.tar.gz
+        target: custom-cloudimg.tar.gz
+    actions:
+      onCreate:
+        before:
+          - cmd: make
+            dir: ubuntu

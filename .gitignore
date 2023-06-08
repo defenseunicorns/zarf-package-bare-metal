@@ -1,6 +1,19 @@
 .vagrant
 .DS_Store
 *.tar.zst
-zarf_*_amd64
+**/zarf_*_amd64
 *.snap
 *.assert
+
+# packer artifacts
+**custom-cloudimg.tar.gz
+**seeds-cloudimg.iso
+**seeds-flat.iso
+**seeds-lvm.iso
+**OVMF_VARS.fd
+**custom-cloudimg.tar.gz
+**custom-ubuntu.tar.gz
+**custom-ubuntu-lvm.dd.gz
+**packer_cache/
+**output-cloudimg/
+**output-flat/
