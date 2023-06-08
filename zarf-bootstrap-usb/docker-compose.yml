@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  maker:
+    build: ./maker
+    volumes:
+    - .:/host
+    working_dir: /host
