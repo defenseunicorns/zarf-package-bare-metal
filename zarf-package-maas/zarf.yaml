@@ -6,13 +6,24 @@ metadata:
   version: 0.0.3
 
 components:
-  - name: maas
+  - name: maas-snap
     required: true
-    manifests:
-      - name: maas
-        namespace: maas
-        files:
-          - manifests/deployment.yaml
-          - manifests/service.yaml
-    images:
-      - "ghcr.io/defenseunicorns/zarf-package-bare-metal:main"
+    actions:
+      onCreate:
+        before:
+          - cmd: ./zarf package pull oci://ghcr.io/defenseunicorns/packages/maas-snap:0.0.2-amd64
+      onDeploy:
+        after:
+          - cmd: ./zarf package deploy zarf-package-maas-snap-amd64-0.0.2.tar.zst --confirm
+    files:
+      - source: zarf-package-maas-snap-amd64-0.0.2.tar.zst
+        target: zarf-package-maas-snap-amd64-0.0.2.tar.zst
+
+  - name: maas-cfg
+    required: true
+    actions:
+      onDeploy:
+        before:
+         - cmd: |
+            maas init region+rack --database-uri maas-test-db:/// --maas-url http://0.0.0.0:5240/MAAS
+            maas createadmin --username admin --password admin --email 'x@x.com'
