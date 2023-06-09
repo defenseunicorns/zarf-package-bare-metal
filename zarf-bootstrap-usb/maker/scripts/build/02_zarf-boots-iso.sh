@@ -2,7 +2,6 @@
 OUT="$1"
 DEPS="$2"
 
-here=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 iso_original="$( compgen -G "$DEPS/ubuntu/ubuntu-*-amd64.iso" )"
 iso_unpacked="$OUT/zarf-boots.fs"
 iso_zarfboot="$OUT/zarf-boots.iso"

@@ -1,7 +1,9 @@
 version: "3.9"
 services:
   maker:
+    privileged: true  # allows use of loopback devices!
     build: ./maker
     volumes:
+    - /dev:/dev # needed to see partitions on loopback device!
     - ..:/host
     working_dir: /host/zarf-bootstrap-usb

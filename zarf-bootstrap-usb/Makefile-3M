@@ -27,5 +27,11 @@ deps: ## download deps
 build: ## build usb.img
 	@$(COMPOSE_RUN) ./maker/scripts/run.sh "$(BUILD)" "$(DEPS)"
 
+vagrant-img-up: ## bring up usb.img-based vagrant-libvirt VM
+	VAGRANT_VAGRANTFILE=Vagrantfile_img vagrant up
+
+vagrant-img-destroy: ## destroy usb.img-based vagrant-libvirt VM
+	VAGRANT_VAGRANTFILE=Vagrantfile_img vagrant destroy -f
+
 help: ## display this help information
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
