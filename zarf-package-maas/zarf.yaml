@@ -7,8 +7,10 @@ metadata:
 
 components:
   - name: maas-images
+    required: true
     manifests:
       - name: maas-images-deployment
+        namespace: maas
         files:
           - manifests/deployment.yaml
     images:
@@ -56,11 +58,11 @@ components:
             maas login admin http://127.0.0.1:5240/MAAS/api/2.0/ $(head -1 api-key-file)
 
             BOOT_SOURCE_ID=$(maas admin boot-sources read | ./jq '.[] | select(.url | contains("images.maas.io/ephemeral-v3")) | .id')
-            maas admin boot-source update $BOOT_SOURCE_ID url=http://localhost:8080/maas/images/ephemeral-v3/stable/
+            maas admin boot-source update $BOOT_SOURCE_ID url=http://localhost:80/maas/images/ephemeral-v3/stable/
 
             mkdir -p /home/$USER
             cp custom-cloudimg.tar.gz /home/$USER/custom-cloudimg.tar.gz
-            
+
             while maas admin boot-resources create name=custom/ubuntu-zarf title="Ubuntu 22.04 w/Zarf" architecture="amd64/generic" content@=/home/$USER/custom-cloudimg.tar.gz; [ $? -ne 0 ]; do
               echo "MaaS not yet ready for image upload... Sleeping for 10 seconds."
               sleep 10

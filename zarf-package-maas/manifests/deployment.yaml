@@ -19,7 +19,7 @@ spec:
         image: ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.1
         ports:
         - containerPort: 80
-          hostPort: 8080
+          hostPort: 80
         resources:
           limits:
             memory: "200Mi"
