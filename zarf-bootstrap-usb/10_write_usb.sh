@@ -72,10 +72,9 @@ esac
 
 
 # write usb.img to selected USB
-USB_IMG="$here/.loop_usb/usb.img"
+USB_IMG="$here/.build/03_zarf-boots-img/usb.img"
 BLOCK=$( numfmt --from=iec-i 4Mi )
 sudo dd if="$USB_IMG" of="$selected_dev" bs="$BLOCK" conv=sparse,fsync oflag=direct status=progress
-
 
 # appears to work but getting this after trying to run parted on dd'd dev:
 #   Error: The backup GPT table is corrupt, but the primary appears OK, so that will be used.

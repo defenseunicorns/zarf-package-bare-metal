@@ -9,7 +9,8 @@ name="${OUT##*.}" # "./.xyz" --> "xyz"
 mkdir --parents "$OUT"
 
 readarray -d '' scripts < <( find "$here/$name" -path "*.sh" -type f -print0 )
-for script in "${scripts[@]}" ; do
+IFS=$'\n' sorted=( $( sort <<<"${scripts[*]}" ) ) ; unset IFS
+for script in "${sorted[@]}" ; do
 
   run="$OUT/$(basename "$script" ".sh")"
   mkdir --parents "$run"
