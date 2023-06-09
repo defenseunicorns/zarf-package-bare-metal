@@ -1,0 +1,3 @@
+verbose
+basedir /var/www/html/repos/apt/ubuntu
+ask-passphrase

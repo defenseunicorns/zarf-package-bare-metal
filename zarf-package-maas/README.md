@@ -20,6 +20,13 @@ cd zarf-package-maas
 zarf package create
 ```
 
+### **Dockerfile Management**
+
+```bash
+docker build . -t ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.2
+docker push ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.2
+```
+
 #### **Testing**
 
 For testing `zarf-package-maas`, two `Vagrantfile`s are provided, in the `test/` folder. You'll need Vagrant installed along with the libvirt Vagrant provider. [Instructions here](https://vagrant-libvirt.github.io/vagrant-libvirt/)
