@@ -26,7 +26,7 @@ COPY docker/options /var/www/html/repos/apt/ubuntu/conf/options
 
 ENV REPREPRO_BASE_DIR=/var/www/html/repos/apt/ubuntu
 
-ENV PACKAGES="lldpd ipmitool freeipmi-tools python3-paramiko"
+ENV PACKAGES="lldpd ipmitool freeipmi-tools python3-paramiko smartmontools"
 
 RUN mkdir -p /packages
 

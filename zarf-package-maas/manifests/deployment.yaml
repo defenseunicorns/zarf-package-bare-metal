@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: apache
-        image: ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.3
+        image: ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.4
         ports:
         - containerPort: 80
           hostPort: 80

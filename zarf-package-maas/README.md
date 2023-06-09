@@ -23,8 +23,8 @@ zarf package create
 ### **Dockerfile Management**
 
 ```bash
-docker build . -t ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.3
-docker push ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.3
+docker build . -t ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.4
+docker push ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.4
 ```
 
 #### **Testing**
