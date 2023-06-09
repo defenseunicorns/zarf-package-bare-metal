@@ -2,7 +2,7 @@
 
 here=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-POOL_DIR="$here/.loop_usb"
+POOL_DIR="$here/.build/03_zarf-boots-img"
 POOL_NAME=$( basename "$POOL_DIR" )
 
 # remove directory-based storage pool

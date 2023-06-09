@@ -1,37 +1,40 @@
 HERE := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+UID := $(shell id -u)
+GID := $(shell id -g)
+COMPOSE_RUN := docker compose run --user "$(UID):$(GID)" --rm maker
 
-clean-downloads: ##
-	rm -rf $(HERE).downloads
+DEPS := ./.deps
+BUILD := ./.build
 
-clean-loop: ##
-	rm -rf $(HERE).loop_usb
+clean: clearDebris clearDocker ## remove all evidence of ever having run
 
-clean-mnt: ##
-	rm -rf $(HERE).mnt
+clearDocker: ## delete maker image
+	@docker compose down --remove-orphans --rmi local
 
-clean-mod: ##
-	rm -rf $(HERE).mod_iso
+clearDebris: ## delete intermediate files/folders
+	@$(COMPOSE_RUN) rm -rf $(DEPS) $(BUILD)
 
-clean: clean-downloads clean-mnt clean-loop clean-mod ## delete all working dirs
+deps: ## download deps
+	@$(COMPOSE_RUN) ./maker/scripts/run.sh "$(DEPS)"
 
-build: ## produces ready-to-burn bootable USB img
-	@$(HERE)10_loop_usb.sh
+build: ## build usb.img from deps
+	@$(COMPOSE_RUN) ./maker/scripts/run.sh "$(BUILD)" "$(DEPS)"
 
-rebuild: clean-mnt clean-mod clean-loop build ## cleans all-but-download-cache & builds usb.img
+create: deps build ## download and build all-the-things
 
 write: ## writes ready-to-burn bootable USB img to user-selected USB drive
 	@$(HERE)10_write_usb.sh
 
-vagrant-up-img: ## bring up usb.img-based vagrant-libvirt VM
+vagrant-img-up: ## bring up usb.img-based vagrant-libvirt VM
 	VAGRANT_VAGRANTFILE=Vagrantfile_img vagrant up
 
-vagrant-destroy-img: ## destroy usb.img-based vagrant-libvirt VM
+vagrant-img-destroy: ## destroy usb.img-based vagrant-libvirt VM
 	VAGRANT_VAGRANTFILE=Vagrantfile_img vagrant destroy -f
 
-vagrant-up-usb: ## bring up usb device-based vagrant-libvirt VM
+vagrant-usb-up: ## bring up usb device-based vagrant-libvirt VM
 	VAGRANT_VAGRANTFILE=Vagrantfile_usb vagrant up
 
-vagrant-destroy-usb: ## destroy usb device-based vagrant-libvirt VM
+vagrant-usb-destroy: ## destroy usb device-based vagrant-libvirt VM
 	VAGRANT_VAGRANTFILE=Vagrantfile_usb vagrant destroy -f
 
 help: ## display this help information

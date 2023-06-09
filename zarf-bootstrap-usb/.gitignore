@@ -5,3 +5,6 @@
 .mnt
 *.iso
 *.img
+
+.deps
+.build
