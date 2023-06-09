@@ -3,5 +3,5 @@ services:
   maker:
     build: ./maker
     volumes:
-    - .:/host
-    working_dir: /host
+    - ..:/host
+    working_dir: /host/zarf-bootstrap-usb
