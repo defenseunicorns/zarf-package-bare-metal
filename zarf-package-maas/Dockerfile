@@ -30,6 +30,13 @@ ENV PACKAGES="lldpd ipmitool freeipmi-tools python3-paramiko"
 
 RUN mkdir -p /packages
 
+RUN gpg --list-secret-keys user@example.com || gpg --batch --passphrase '' --quick-gen-key user@example.com default default
+
+# Show the GPG public key and write to file
+RUN gpg --armor --export user@example.com | tee key.pub
+
+RUN sed -i "s/<key-id>/$(gpg --list-secret-keys --keyid-format=long | grep sec | cut -d '/' -f2 | cut -d ' ' -f 1)/g" /var/www/html/repos/apt/ubuntu/conf/distributions
+
 RUN cd packages && apt-get download $(apt-cache depends --recurse --no-recommends --no-suggests \
     --no-conflicts --no-breaks --no-enhances \
     --no-pre-depends ${PACKAGES} | grep "^\w") \

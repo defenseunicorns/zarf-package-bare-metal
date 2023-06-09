@@ -13,7 +13,7 @@ ZARF_PXE_PKG="$( find "$OUT/../01_zarf-package-pxe-server" -name "zarf-package-*
 # https://askubuntu.com/questions/931581/flashing-ubuntu-iso-to-usb-stick-with-dd-recommended-block-size
 # size="15631122432" # Cruzer USB bytes
 size=$( numfmt --from=iec-i 14.5Gi )
-block=$( numfmt --from=iec-i 4Ki )
+block=$( numfmt --from=iec-i 512Mi )
 if [ $(( $size % $block )) -ne 0 ] ; then
   echo "Block ($block) doesn't divide evenly into size ($size)! Try again!"
   exit 1

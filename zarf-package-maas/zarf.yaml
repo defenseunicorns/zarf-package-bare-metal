@@ -14,7 +14,7 @@ components:
         files:
           - manifests/deployment.yaml
     images:
-      - ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.1
+      - ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.3
 
   - name: maas-snap
     required: true

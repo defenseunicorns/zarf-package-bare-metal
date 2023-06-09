@@ -4,3 +4,4 @@ Codename: jammy
 Architectures: i386 amd64
 Components: main
 Description: Apt repository for project zarf-maas
+SignWith: <key-id>
