@@ -38,11 +38,11 @@ Vagrant.configure("2") do |config|
       mkdir -p ~/.docker
       REGISTRY_SECRET=$(zarf tools get-creds registry)
       AUTH=$(echo -n "zarf-push:$REGISTRY_SECRET" | base64)
-      echo "{ \"auths\": { \"127.0.0.1:31999\": { \"auth\": \"$AUTH\" } } }" > ~/.docker/config.json
+      echo "{ \\"auths\\": { \\"127.0.0.1:31999\\": { \\"auth\\": \\"$AUTH\\" } } }" > ~/.docker/config.json
 
       # Publish every package int he current directory to the registry
       for ZARF_PACKAGE in zarf-*; do
-        zarf package publish $ZARF_PACKAGE oci://127.0.0.1:31999/zarf-packages
+        zarf package publish $ZARF_PACKAGE oci://127.0.0.1:31999/zarf-packages --no-progress --insecure
       done
 
     SHELL
