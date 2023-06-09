@@ -51,31 +51,21 @@ cp "./autoinstall.yaml" "$AI/user-data"
 
 
 # pack modified iso
-xorriso -as mkisofs -r \
-  -V 'Zarf Boots' \
-  -o "$iso_zarfboot" \
-  --grub2-mbr "$boot_imgs/1-Boot-NoEmul.img" \
-  -partition_offset 16 \
-  --mbr-force-bootable \
-  -append_partition 2 28732ac11ff8d211ba4b00a0c93ec93b "$boot_imgs/2-Boot-NoEmul.img" \
-  -appended_part_as_gpt \
-  -iso_mbr_part_type a2a0d0ebe5b9334487c068b6b72699c7 \
-  -c '/boot.catalog' \
-  -b '/boot/grub/i386-pc/eltorito.img' \
-    -no-emul-boot -boot-load-size 4 -boot-info-table --grub2-boot-info \
-  -eltorito-alt-boot \
-  -e '--interval:appended_partition_2:::' \
-  -no-emul-boot \
-  "$iso_unpacked"
-
-
-# # set img / & write block size (in bytes)
-# # https://www.gnu.org/software/coreutils/manual/html_node/numfmt-invocation.html
-# # https://askubuntu.com/questions/931581/flashing-ubuntu-iso-to-usb-stick-with-dd-recommended-block-size
-# # SIZE=$( numfmt --from=si 15.5G )
-# SIZE="15631122432" # Cruzer USB bytes
-# BLOCK=$( numfmt --from=iec-i 4Ki )
-# if [ $(( $SIZE % $BLOCK )) -ne 0 ] ; then
-#   echo "Block ($BLOCK) doesn't divide evenly into size ($SIZE)! Try again!"
-#   exit 1
-# fi
+if [ ! -f "$iso_zarfboot" ] ; then
+  xorriso -as mkisofs -r \
+    -V 'Zarf Boots' \
+    -o "$iso_zarfboot" \
+    --grub2-mbr "$boot_imgs/1-Boot-NoEmul.img" \
+    -partition_offset 16 \
+    --mbr-force-bootable \
+    -append_partition 2 28732ac11ff8d211ba4b00a0c93ec93b "$boot_imgs/2-Boot-NoEmul.img" \
+    -appended_part_as_gpt \
+    -iso_mbr_part_type a2a0d0ebe5b9334487c068b6b72699c7 \
+    -c '/boot.catalog' \
+    -b '/boot/grub/i386-pc/eltorito.img' \
+      -no-emul-boot -boot-load-size 4 -boot-info-table --grub2-boot-info \
+    -eltorito-alt-boot \
+    -e '--interval:appended_partition_2:::' \
+    -no-emul-boot \
+    "$iso_unpacked"
+fi
