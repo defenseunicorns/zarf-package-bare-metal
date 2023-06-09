@@ -1,54 +1,57 @@
 ### Usage
 
-Download Ubuntu 22.04 distro & inject custom autoinstall scripts:
+Build Ubuntu-based, bootable, "Zarf Boots" image file with:
 
 ```
-# ./01_mod_iso.sh
+make create
 ```
+&nbsp;
 
-Write custom ISO to USB drive & create data partition in remaining free space:
 
-```
-# ./02_make_usb.sh
-```
-
-Download Zarf distro & build Zarf PXE package:
+Boot a (libvirt-based) VM from image file with:
 
 ```
-# ./03_build_zarf.sh
+make vagrant-img-up
+make vagrant-img-destroy
 ```
+Watch the VM work:
 
-Write Zarf / PXE package / firstboot scripts (and any other deps) to USB data partition:
+  1. Open the VM console (use `virt-viewer`)
+
+  1. Select the "Zarf Boots" GRUB option & wait for autoinstaller to run & VM to reboot.
+
+  1. Login as user: "admin" with password "admin" and Zarf some things!
+
+&nbsp;
+
+
+Burn it to a bootable USB device with:
 
 ```
-# ./04_load_usb.sh
+make write
 ```
+&nbsp;
 
-Watch it work:
 
-- Modify the Vagrant file so it uses your specific USB device (by matching vendor / product IDs), like so:
+Boot a (libvirt-based) VM from usb device with:
 
-    ```
-    # lsusb: Bus 001 Device 007: ID 0781:55a5 SanDisk Corp. Cruzer U
+```
+make vagrant-usb-up
+make vagrant-usb-destroy
+```
+> Be sure to update the `Vagrant_usb` file! Libvirt requires a h/w-based device identifier to know which USB key to use.
 
-    lv.usb :vendor => '0x0781', :product => '0x55a5'
-    ```
+Watch the VM work:
 
-- Start the VM:
+  1. Open the VM console (use `virt-viewer`)
 
-    ```
-    $ vagrant up
-    ```
-- Boot to USB:
-  1.  Open the VM console (via virt-viewer!)
-
-  1. type "exit" at the UEFI boot screen
+  1. Type "exit" at the UEFI boot screen (if it hangs there)
   
   1. Select your USB device from the UEFI boot options
 
-- Wait for autoinstaller to run & VM to reboot.
+  1. Select the "Zarf Boots" GRUB option & wait for autoinstaller to run & VM to reboot.
 
-- Login as user: "admin" with password "admin" and Zarf some things!
+  1. Login as user: "admin" with password "admin" and Zarf some things!
 
 &nbsp;
 
@@ -106,25 +109,23 @@ Watch it work:
   - as passing args to K3S that caused Traefik to start which cause conflict
     - rm'd the K3S flags and everything went well
 
+- ✓ -- get usb.img build into one-or-more containers.
+  - much less likely to "works on my machine" across the team!
+
+- ? -- would like to move write_usb.sh into a container too (if possible..?)
+  - would avoid having to install expected utils (parted, etc.) on host
+  - not sure of the feasibility cross-platform though.
+
 - ? -- make sure it works without internet connection on the VM!
   - test on airgapped hardware!
 
 - ? -- find a way to notify user that runonce.service has completed successfully... or not?  MotD?  Something else?
 
-- ? -- get usb.img build into one-or-more containers.
-
 - ? -- add folder-based placeholder for containing files we want burned and them add them to the usb.img during creation
 
-- ? -- currently using hard-coded 16GB blank.img / usb.img, which... takes too long to dd to disk
-  - find a way to build sparse modified iso / usb.img file (currently hard-coded to 16GB)
-    - https://www.libguestfs.org/virt-sparsify.1.html ..?
-  - OR, move to multi-stage USB creation where:
-    - download zarf deps & size them
-    - inspect "me too" deps directory & size it
-    - create a zeroized base.img that can just-barely hold all that
-    - dd ubuntu iso onto base.img
-    - add data partition to base.img
-    - loopback mount data partition & copy over deps
-    - umount loopback
-    - write base.img to usb device (so dd'ing 5GB instead of 16GB)
-    - post-write, expand data partition to fill remaining space on disk
+- ? -- currently using hard-coded 16GB(-ish) blank.img / usb.img, which could be:
+  - too small to fit all the files needed (i.e. if a USB HD is used), or
+  - much larger than the content needed and so will waste time on blank.img gen.
+  - to solve that, would like to move to smarter USB creation strat that:
+    - can know all of what is needed _first_, and then gen an right-sized blank from that.
+    

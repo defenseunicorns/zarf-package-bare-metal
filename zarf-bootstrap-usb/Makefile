@@ -23,7 +23,7 @@ build: ## build usb.img from deps
 create: deps build ## download and build all-the-things
 
 write: ## writes ready-to-burn bootable USB img to user-selected USB drive
-	@$(HERE)10_write_usb.sh
+	@$(HERE)write_usb.sh
 
 vagrant-img-up: ## bring up usb.img-based vagrant-libvirt VM
 	VAGRANT_VAGRANTFILE=Vagrantfile_img vagrant up
