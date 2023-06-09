@@ -1,9 +1,8 @@
 #!/bin/bash
-
 OUT="$1"
 
-RELEASES="https://github.com/defenseunicorns/zarf/releases/download"
 VERSION="v0.27.1"
+RELEASES="https://github.com/defenseunicorns/zarf/releases/download"
 REMOTE_INIT="${RELEASES}/${VERSION}/zarf-init-amd64-${VERSION}.tar.zst"
 REMOTE_BIN="${RELEASES}/${VERSION}/zarf_${VERSION}_Linux_amd64"
 REMOTE_SUMS="${RELEASES}/${VERSION}/checksums.txt"
