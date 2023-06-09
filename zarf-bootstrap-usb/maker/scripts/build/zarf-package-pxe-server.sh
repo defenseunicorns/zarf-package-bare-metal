@@ -10,5 +10,6 @@ source="$root/zarf-package-pxe-server"
 package="$OUT/zarf-package-*-amd64.tar.zst"
 
 if ! compgen -G "$package" > /dev/null ; then
-  "$zarf" package create "$source" --output-directory "$OUT" --confirm
+  su -c "'$zarf' package create '$source' --output-directory '$OUT' --confirm"
+  su -c "chown $(id -u):$(id -g) $package"
 fi

@@ -1,5 +1,8 @@
 HERE := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-COMPOSE_RUN := docker compose run --rm maker
+UID := $(shell id -u)
+GID := $(shell id -g)
+
+COMPOSE_RUN := docker compose run --user "$(UID):$(GID)" --rm maker
 
 DEPS := ./.deps
 BUILD := ./.build
