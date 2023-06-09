@@ -16,6 +16,11 @@ Vagrant.configure("2") do |config|
       libvirt.cpu_mode = 'host-passthrough'
       libvirt.memory = '10024'
       libvirt.cpus = '8'
+
+      libvirt.management_network_name = "airgap-net"
+      libvirt.management_network_address = "10.49.49.0/24"
+      libvirt.management_network_mode = "none"
+      libvirt.management_network_mac = "86:d9:8f:fc:f0:20"
     end
   
     # Expect zarf binary and init package to be in same folder as Vagrantfile, then mounted to /vagrant
@@ -30,6 +35,9 @@ Vagrant.configure("2") do |config|
       # cp /vagrant/config.json /root/.docker/config.json
       chmod +x /usr/local/bin/zarf
       mkdir -p /var/images
+      
+      ip route add default via 10.49.49.1
+
       zarf init --components=k3s --no-progress --confirm
       # zarf package deploy oci://ghcr.io/defenseunicorns/packages/maas:0.0.1-amd64 --confirm
       zarf package deploy zarf-package-maas-amd64-0.0.4.tar.zst --no-progress --confirm
