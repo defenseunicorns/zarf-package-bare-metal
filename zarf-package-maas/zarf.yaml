@@ -3,9 +3,17 @@ metadata:
   name: maas
   description: "Zarf package with a Canonical MaaS deployment"
   architecture: amd64
-  version: 0.0.4
+  version: 0.0.5
 
 components:
+  - name: maas-images
+    manifests:
+      - name: maas-images-deployment
+        files:
+          - manifests/deployment.yaml
+    images:
+      - ghcr.io/defenseunicorns/zarf-package-bare-metal/maas-images:0.1
+
   - name: maas-snap
     required: true
     actions:
@@ -34,14 +42,22 @@ components:
 
   - name: maas-cfg
     required: true
+    files:
+      - source: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+        target: jq
+        executable: true
     actions:
       onDeploy:
-        before:
+        after:
          - cmd: |
             maas init region+rack --database-uri maas-test-db:/// --maas-url http://0.0.0.0:5240/MAAS
             maas createadmin --username admin --password admin --email 'x@x.com'
             maas apikey --username=admin > api-key-file
             maas login admin http://127.0.0.1:5240/MAAS/api/2.0/ $(head -1 api-key-file)
+
+            BOOT_SOURCE_ID=$(maas admin boot-sources read | ./jq '.[] | select(.url | contains("images.maas.io/ephemeral-v3")) | .id')
+            maas admin boot-source update $BOOT_SOURCE_ID url=http://localhost:8080/maas/images/ephemeral-v3/stable/
+
             mkdir -p /home/$USER
             cp custom-cloudimg.tar.gz /home/$USER/custom-cloudimg.tar.gz
             

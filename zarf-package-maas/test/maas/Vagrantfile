@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
       cd /root
       cp /vagrant/zarf_v0.27.1_Linux_amd64 /usr/local/bin/zarf
       cp /vagrant/zarf-init-amd64-v0.27.1.tar.zst /root/
-      cp /vagrant/zarf-package-maas-amd64-0.0.4.tar.zst /root/
+      cp /vagrant/zarf-package-maas-amd64-0.0.5.tar.zst /root/
       # mkdir -p /root/.docker
       # cp /vagrant/config.json /root/.docker/config.json
       chmod +x /usr/local/bin/zarf
@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
 
       zarf init --components=k3s --no-progress --confirm
       # zarf package deploy oci://ghcr.io/defenseunicorns/packages/maas:0.0.1-amd64 --confirm
-      zarf package deploy zarf-package-maas-amd64-0.0.4.tar.zst --no-progress --confirm
+      zarf package deploy zarf-package-maas-amd64-0.0.5.tar.zst --no-progress --confirm
 
       # Login to the registry
       mkdir -p ~/.docker
